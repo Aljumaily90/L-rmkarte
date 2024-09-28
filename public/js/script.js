@@ -59,6 +59,76 @@ if (!localStorage.getItem('viewChangeHintShown')) {
 }
 
 /************************************************************************************ */
+// Layer-Definition für Tag- und Nacht-Lärm
+var dayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
+    minZoom: 12,
+    maxZoom: 19,
+    subdomains: '1234',
+    opacity: 0.7,
+    attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
+});
+
+var nightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_nacht/default/current/3857/{z}/{x}/{y}.png', {
+    minZoom: 12,
+    maxZoom: 19,
+    subdomains: '1234',
+    opacity: 0.7,
+    attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
+});
+
+// Schieberegler und Checkbox-Elemente erfassen
+var dayNightToggle = document.getElementById('dayNightToggle');
+var noiseCheckbox = document.getElementById('filterNoise');
+var toggleLabel = document.getElementById('toggleLabel');
+
+// Initialer Zustand: Schieberegler deaktivieren
+dayNightToggle.disabled = true; // Schieberegler deaktivieren
+document.querySelector('.switch').classList.add('disabled'); // Styling für deaktivierten Schieberegler
+
+// Event-Listener für die Straßenlärm-Checkbox
+noiseCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+        // Checkbox aktiviert -> Schieberegler aktivieren und Tag-Daten anzeigen
+        dayNightToggle.disabled = false; // Schieberegler aktivieren
+        document.querySelector('.switch').classList.remove('disabled'); // Styling entfernen
+
+        // Standardansicht auf Tag setzen
+        map.addLayer(dayNoiseLayer);
+        if (dayNightToggle.checked) {
+            // Wenn der Schieberegler auf "Nacht" steht
+            map.addLayer(nightNoiseLayer);
+            map.removeLayer(dayNoiseLayer);
+            toggleLabel.textContent = "Nacht";
+        }
+    } else {
+        // Checkbox deaktiviert -> Schieberegler deaktivieren und Layer entfernen
+        dayNightToggle.disabled = true; // Schieberegler deaktivieren
+        document.querySelector('.switch').classList.add('disabled'); // Styling hinzufügen
+
+        // Entferne beide Layer, falls aktiv
+        map.removeLayer(dayNoiseLayer);
+        map.removeLayer(nightNoiseLayer);
+        toggleLabel.textContent = "Tag"; // Standardanzeige
+        dayNightToggle.checked = false; // Schieberegler auf Tag zurücksetzen
+    }
+});
+
+// Event-Listener für den Tag/Nacht-Schieberegler
+dayNightToggle.addEventListener('change', function() {
+    if (dayNightToggle.disabled) return; // Wenn der Schieberegler deaktiviert ist, nichts tun
+
+    if (this.checked) {
+        // Nachtmodus
+        map.removeLayer(dayNoiseLayer);
+        map.addLayer(nightNoiseLayer);
+        toggleLabel.textContent = "Nacht";
+    } else {
+        // Tagmodus
+        map.removeLayer(nightNoiseLayer);
+        map.addLayer(dayNoiseLayer);
+        toggleLabel.textContent = "Tag";
+    }
+});
 
 /************************************************************************************************** */
 

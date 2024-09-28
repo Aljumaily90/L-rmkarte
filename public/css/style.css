@@ -181,3 +181,76 @@
     color: #fff; /* Textfarbe für aktive Ansicht */
     border-color: #0056b3; /* Umrandung für aktive Ansicht */
 }
+
+
+/* Styling für den Schieberegler (Tag/Nacht) */
+.day-night-toggle {
+    display: flex;
+    align-items: center;
+    margin: 10px 0 0 20px; /* Abstand nach oben und unten */
+    
+}
+
+.day-night-toggle span {
+    margin-right: 10px; /* Abstand zwischen Label und Schieberegler */
+    font-size: 16px; /* Schriftgröße */
+    color: #333; /* Schriftfarbe */
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px; /* Runde Ecken für den Schieberegler */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%; /* Runde Form für den Schieberegler */
+}
+
+input:checked + .slider {
+    background-color: #007bff; /* Farbe des aktivierten Reglers */
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px); /* Position des Kreises bei aktivierter Ansicht */
+}
+
+/* Deaktivierter Stil für den Schieberegler */
+.switch.disabled .slider {
+    background-color: #e0e0e0; /* Heller Hintergrund für deaktivierten Zustand */
+    cursor: not-allowed; /* Zeigt an, dass der Regler nicht anklickbar ist */
+}
+
+.switch.disabled .slider:before {
+    background-color: #ccc; /* Graue Farbe für den Regler-Knopf im deaktivierten Zustand */
+}
+#toggleLabel{
+    color: #fff;
+}
