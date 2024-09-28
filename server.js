@@ -39,7 +39,12 @@ app.use(helmet.contentSecurityPolicy({
             "https://wmts1.geo.admin.ch",  // Erlaubt Bilder von dieser Domain
             "https://wmts2.geo.admin.ch",  // Erlaubt Bilder von dieser Domain
             "https://wmts3.geo.admin.ch",  // Erlaubt Bilder von dieser Domain
-            "https://wmts4.geo.admin.ch"   // Erlaubt Bilder von dieser Domain
+            "https://wmts4.geo.admin.ch",   // Erlaubt Bilder von dieser Domain
+            "https://a.tile.opentopomap.org",
+            "https://b.tile.opentopomap.org",
+            "https://c.tile.opentopomap.org",
+            "https://server.arcgisonline.com" // Esri World Imagery hinzufügen
+
         ],
         connectSrc: [
             "'self'",

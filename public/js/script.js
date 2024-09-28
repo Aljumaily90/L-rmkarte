@@ -5,13 +5,60 @@ var searchCache = {};  // Cache für Suchanfragen
 // Initialisiere die Karte
 const map = L.map('map').setView([46.8182, 8.2275], 8);
 
-// Füge eine Basiskartenebene von Swisstopo hinzu
-L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', {
+// Initialisierung der Kartenansichten
+var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', {
     minZoom: 9,
     maxZoom: 19,
+    updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
+    useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
     subdomains: '123',
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
-}).addTo(map);
+});
+
+var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    minZoom: 9,
+    updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
+    useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
+
+    attribution: '&copy; <a href="https://www.esri.com/">Esri</a>'
+});
+
+// Standard-Karte beim Laden hinzufügen
+map.addLayer(standardLayer);
+
+// Event-Listener für die Ansichtsauswahl
+document.getElementById('standardView').addEventListener('click', function() {
+    if (!map.hasLayer(standardLayer)) {
+        map.addLayer(standardLayer); // Standardansicht hinzufügen
+        map.removeLayer(satelliteLayer); // Satellitenansicht entfernen
+    }
+    updateActiveButton(this); // Aktiven Button hervorheben
+});
+
+document.getElementById('satelliteView').addEventListener('click', function() {
+    if (!map.hasLayer(satelliteLayer)) {
+        satelliteLayer.addTo(map); // Füge den Layer nur hinzu, wenn er benötigt wird
+    }
+    map.removeLayer(standardLayer);
+    updateActiveButton(this);
+});
+
+// Funktion zum Aktualisieren des aktiven Buttons
+function updateActiveButton(activeButton) {
+    document.querySelectorAll('.map-view-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    activeButton.classList.add('active');
+}
+
+// Hinweis anzeigen beim ersten Wechsel
+if (!localStorage.getItem('viewChangeHintShown')) {
+    alert('Wechseln Sie zwischen den Kartenansichten mit den Optionen oben.');
+    localStorage.setItem('viewChangeHintShown', 'true');
+}
+
+/************************************************************************************ */
 
 /************************************************************************************************** */
 

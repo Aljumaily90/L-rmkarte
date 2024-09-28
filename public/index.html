@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
        <!-- CSS-Datei aus dem neuen Pfad laden -->
-    <link rel="stylesheet" href="/css/style.css mm">
+    <link rel="stylesheet" href="/css/style.css">
        <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
        <!-- Leaflet MarkerCluster CSS -->
@@ -30,6 +30,11 @@
                 
                 <!-- Markenname bzw. Logo -->
                 <a class="navbar-brand" href="/index.html"><h3>Lärmkarte Schweiz</h3></a>
+
+                <div class="map-view-selector">
+                    <button class="map-view-btn" id="standardView">Standard</button>
+                    <button class="map-view-btn" id="satelliteView">Satellit</button>
+                </div>
 
 
 
@@ -58,6 +63,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+
+
                 <!-- Offcanvas-Menü für die Filteroptionen -->
                 <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
                     <!-- Kopfbereich des Offcanvas-Menüs mit Schließen-Button -->
@@ -65,6 +72,7 @@
                         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Filter</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
+ 
 
                     <!-- Offcanvas-Körper mit Filteroptionen (Checkboxen) -->
                     <div class="offcanvas-body">
