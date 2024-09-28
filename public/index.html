@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <!-- Grundlegende Meta-Informationen -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+       <!-- CSS-Datei aus dem neuen Pfad laden -->
+    <link rel="stylesheet" href="/css/style.css">
+       <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+       <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
+       <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+       <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   
+    <!-- Titel der Webseite -->
+    <title>Lärmkarte Schweiz</title>
+</head>
+
+<body class="d-flex flex-column vh-100">
+
+    <!-- Header-Bereich mit Navigation -->
+    <header>
+        <nav class="navbar navbar-dark bg-dark fixed-top">
+            <div class="container-fluid d-flex justify-content-between">
+                
+                <!-- Markenname bzw. Logo -->
+                <a class="navbar-brand" href="/index.html"><h3>Lärmkarte Schweiz</h3></a>
+
+
+
+                <!-- Suchformular zur Adresssuche -->
+                <form id="searchForm" class="d-flex position-relative">
+                    <div class="position-relative" style="flex-grow: 1;">
+                        <!-- Eingabefeld für die Adresssuche mit der angepassten Breite -->
+                        <input id="addressInput" class="form-control" type="text" placeholder="Adresse suchen" autocomplete="off">
+                        <!-- Vorschlagsliste für die Adresssuche -->
+                        <ul id="suggestions" class="list-group position-absolute"></ul>
+                    </div>
+                    
+                    <!-- Standort-Button -->
+                    <button id="locationButton" class="btn" type="button" title="Aktuellen Standort anzeigen">
+                        <img src="/images/location-icon.png" alt="Standort" style="width: 20px; height: 20px;">
+                    </button>
+                    
+                    <!-- Suchbutton -->
+                    <button id="submit" class="btn btn-success ms-2" type="submit">Suche</button>
+                </form>
+
+
+
+                <!-- Button zur Öffnung des Offcanvas-Menüs -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Offcanvas-Menü für die Filteroptionen -->
+                <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                    <!-- Kopfbereich des Offcanvas-Menüs mit Schließen-Button -->
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Filter</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Offcanvas-Körper mit Filteroptionen (Checkboxen) -->
+                    <div class="offcanvas-body">
+                        <form id="filterForm">
+                            <!-- Checkbox für Straßenlärm -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="noise" id="filterNoise">
+                                <label class="form-check-label" for="filterNoise">
+                                    <img src="./images/Traffic.png" alt="Traffic" width="20"> Strassenlärm
+                                </label>
+                            </div>
+
+                            <!-- Checkbox für Spitäler -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="hospitals" id="filterHospitals">
+                                <label class="form-check-label" for="filterHospitals">
+                                    <img src="./images/hospital-icon.png" alt="Traffic" width="20"> Spitäler
+                                </label>
+                            </div>
+
+                            <!-- Checkbox für Spielplätze -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="playgrounds" id="filterPlaygrounds">
+                                <label class="form-check-label" for="filterPlaygrounds">
+                                    <img src="./images/playground-icon.png" alt="Traffic" width="20"> Spielplätze
+                                </label>
+                            </div>
+
+                            <!-- Checkbox für Schulen -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="schools" id="filterSchools">
+                                <label class="form-check-label" for="filterSchools">
+                                    <img src="./images/school-icon.png" alt="Traffic" width="20"> Schulen
+                                </label>
+                                
+                            </div>
+
+                            <!--  Checkbox für Kirchen  -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="parks" id="filterChurches">
+                                <label class="form-check-label" for="filterChurches">
+                                    <img src="./images/church-icon.png" alt="Traffic" width="20"> Kirchen
+                                </label>
+                            </div>
+
+                            <!--  Checkbox für Baustellen  -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="parks" id="filterConstruction">
+                                <label class="form-check-label" for="filterConstruction">
+                                    <img src="./images/construction-icon.png" alt="Traffic" width="20"> Baustellen
+                                </label>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hauptbereich der Seite mit der Kartenanzeige -->
+    <div class="container-fluid flex-grow-1 p-0">
+        <!-- Hier wird die Karte geladen (Leaflet-Map) -->
+        <div id="map" class="w-100 h-100"></div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet MarkerCluster JS -->
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <!-- Eigene JavaScript-Datei -->
+    <script src="/js/script.js"></script>
+</body>
+</html>

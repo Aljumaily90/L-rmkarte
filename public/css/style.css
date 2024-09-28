@@ -1,0 +1,138 @@
+/************************************
+ *  Grundlegendes Layout und Kartenbereich
+ ************************************/
+
+/* Kartenbereich: Vollbild */
+#map {
+    height: calc(100vh - 56px); /* Korrekte Höhe berechnen, abhängig von der Navbar-Höhe */
+    width: 100%; /* Volle Breite */
+    position: relative; /* Relative Positionierung */
+}
+
+/************************************
+ *  Suchformular und Eingabefeld-Stile
+ ************************************/
+
+ /* Navbar-Anpassungen */
+.navbar {
+    display: flex; /* Flexbox für horizontale Anordnung */
+    align-items: center; /* Elemente vertikal zentrieren */
+    justify-content: space-between; /* Platz zwischen den Elementen */
+}
+
+/* Suchformular in der Navbar */
+#searchForm {
+    display: flex; /* Flexbox für horizontale Ausrichtung */
+    align-items: center; /* Vertikale Zentrierung der Elemente */
+    gap: 10px; /* Abstand zwischen den Elementen */
+    flex-grow: 1; /* Das Formular soll den restlichen Platz einnehmen */
+    max-width: 600px; /* Maximalbreite des Suchformulars */
+    margin-right: 20px; /* Abstand vom rechten Rand */
+}
+
+/* Eingabefeld */
+#addressInput {
+    flex-grow: 1; /* Eingabefeld nimmt den restlichen Platz ein */
+    max-width: 400px; /* Maximale Breite des Eingabefeldes */
+}
+
+/* Vorschlagsliste unter dem Suchfeld */
+#suggestions {
+    max-height: 200px; /* Maximale Höhe der Liste */
+    overflow-y: auto; /* Scrollen ermöglichen, wenn Vorschläge über die maximale Höhe hinausgehen */
+    position: absolute; /* Absolute Positionierung, um es unter dem Eingabefeld zu halten */
+    z-index: 1000; /* Sicherstellen, dass es über anderen Elementen liegt */
+    background: white; /* Hintergrundfarbe der Liste */
+    width: 100%; /* Gleiche Breite wie das Eingabefeld */
+    border: none; /* Entfernt den Rahmen */
+    top: 100%; /* Positionierung direkt unter dem Eingabefeld */
+    left: 0; /* Links an der Eingabefeldgrenze ausrichten */
+}
+
+/* Form-Control auf die volle Breite ausrichten */
+.form-control {
+    width: 100%; /* Volle Breite für Formularelemente */
+}
+
+/* Container des Suchfelds soll den verfügbaren Platz nutzen */
+#searchForm > div {
+    flex-grow: 1; /* Der Div-Container wächst mit */
+}
+
+/* Button darf nicht schrumpfen */
+#searchForm .btn {
+    flex-shrink: 0; /* Verhindert, dass der Button schrumpft */
+    white-space: nowrap; /* Verhindert, dass der Button umbricht */
+}
+
+/************************************
+ *  Standort-Button-Stile
+ ************************************/
+
+/* Standort-Button-Stile */
+#locationButton {
+    background-color: #007bff; /* Hintergrundfarbe des Buttons */
+    border: none; /* Rahmen entfernen */
+    padding: 6px; /* Innenabstand des Buttons */
+    cursor: pointer; /* Cursor als Hand anzeigen */
+    flex-shrink: 0; /* Verhindert das Schrumpfen des Buttons */
+    height: 38px; /* Gleiche Höhe wie das Eingabefeld */
+    display: flex; /* Flexbox zur Zentrierung des Icons */
+    align-items: center; /* Vertikale Zentrierung */
+    justify-content: center; /* Horizontale Zentrierung */
+}
+
+/* Standort-Button-Icon */
+#locationButton img {
+    width: 20px; /* Breite des Icons */
+    height: 20px; /* Höhe des Icons */
+}
+
+/* Hover-Effekt für Standort-Button */
+#locationButton:hover {
+    background-color: #a2f1c0; /* Dunklere Hintergrundfarbe beim Hover */
+}
+
+/* Suchbutton */
+.btn-success {
+    flex-shrink: 0; /* Verhindert das Schrumpfen des Buttons */
+    height: 38px; /* Gleiche Höhe wie das Eingabefeld */
+    margin-left: 5px; /* Abstand zwischen Standort-Button und Suchbutton */
+}
+
+/************************************
+ *  Anpassungen für kleinere Bildschirme
+ ************************************/
+
+ @media (max-width: 768px) {
+    /* Navbar flexibles Layout für kleinere Bildschirme */
+    .navbar {
+        flex-wrap: wrap; /* Elemente untereinander anordnen, wenn nötig */
+    }
+
+    /* Suchformular Anpassung */
+    #searchForm {
+        flex-direction: column; /* Elemente untereinander anordnen */
+        align-items: stretch; /* Über die gesamte Breite strecken */
+        width: 100%; /* Volle Breite nutzen */
+        max-width: 100%; /* Maximalbreite auf 100% begrenzen */
+    }
+
+    /* Eingabefeld auf volle Breite setzen */
+    #addressInput {
+        width: 100%; /* Volle Breite für das Eingabefeld */
+        max-width: 100%; /* Maximale Breite auf 100% begrenzen */
+    }
+
+    /* Standort-Button zentrieren und Breite anpassen */
+    #locationButton {
+        width: 100%; /* Button über gesamte Breite */
+        margin: 10px 0; /* Abstand nach oben und unten */
+    }
+
+    /* Suchbutton auch auf volle Breite setzen */
+    .btn-success {
+        width: 100%; /* Suchbutton auf volle Breite */
+        margin-bottom: 10px; /* Abstand nach unten */
+    }
+}
