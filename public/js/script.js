@@ -27,21 +27,25 @@ var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/se
 // Standard-Karte beim Laden hinzufügen
 map.addLayer(standardLayer);
 
-// Event-Listener für die Ansichtsauswahl
-document.getElementById('standardView').addEventListener('click', function() {
-    if (!map.hasLayer(standardLayer)) {
-        map.addLayer(standardLayer); // Standardansicht hinzufügen
-        map.removeLayer(satelliteLayer); // Satellitenansicht entfernen
-    }
-    updateActiveButton(this); // Aktiven Button hervorheben
+// Event-Listener für das Wechseln der Kartenansicht
+document.getElementById('standardView').addEventListener('click', function(e) {
+    e.preventDefault();
+    map.removeLayer(satelliteLayer);
+    map.addLayer(standardLayer);
+    document.querySelectorAll('.dropdown-item').forEach(function(item) {
+        item.classList.remove('active');
+    });
+    this.classList.add('active');
 });
 
-document.getElementById('satelliteView').addEventListener('click', function() {
-    if (!map.hasLayer(satelliteLayer)) {
-        satelliteLayer.addTo(map); // Füge den Layer nur hinzu, wenn er benötigt wird
-    }
+document.getElementById('satelliteView').addEventListener('click', function(e) {
+    e.preventDefault();
     map.removeLayer(standardLayer);
-    updateActiveButton(this);
+    map.addLayer(satelliteLayer);
+    document.querySelectorAll('.dropdown-item').forEach(function(item) {
+        item.classList.remove('active');
+    });
+    this.classList.add('active');
 });
 
 // Funktion zum Aktualisieren des aktiven Buttons
@@ -57,9 +61,13 @@ if (!localStorage.getItem('viewChangeHintShown')) {
     alert('Wechseln Sie zwischen den Kartenansichten mit den Optionen oben.');
     localStorage.setItem('viewChangeHintShown', 'true');
 }
-
 /************************************************************************************ */
-// Layer-Definition für Tag- und Nacht-Lärm
+/************************************************************************************ */
+// Erfasse den Schieberegler, die Checkbox und die Layer für Tag/Nacht-Lärm
+var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schieberegler für Tag/Nacht
+var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schieberegler für Tag/Nacht
+var noiseCheckbox = document.getElementById('filterNoise'); // Die Checkbox für Straßenlärm
+
 var dayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
     minZoom: 12,
     maxZoom: 19,
@@ -76,60 +84,51 @@ var nightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.la
     attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
 });
 
-// Schieberegler und Checkbox-Elemente erfassen
-var dayNightToggle = document.getElementById('dayNightToggle');
-var noiseCheckbox = document.getElementById('filterNoise');
-var toggleLabel = document.getElementById('toggleLabel');
 
-// Initialer Zustand: Schieberegler deaktivieren
-dayNightToggle.disabled = true; // Schieberegler deaktivieren
-document.querySelector('.switch').classList.add('disabled'); // Styling für deaktivierten Schieberegler
+
+// Initial: Schieberegler und Lärmlayer verstecken
+dayNightToggle.style.display = 'none';
+dayNoiseLayer.remove();
+nightNoiseLayer.remove();
 
 // Event-Listener für die Straßenlärm-Checkbox
 noiseCheckbox.addEventListener('change', function() {
     if (this.checked) {
-        // Checkbox aktiviert -> Schieberegler aktivieren und Tag-Daten anzeigen
-        dayNightToggle.disabled = false; // Schieberegler aktivieren
-        document.querySelector('.switch').classList.remove('disabled'); // Styling entfernen
+        // Wenn die Checkbox für Straßenlärm aktiviert ist, den Schieberegler anzeigen
+        dayNightToggle.style.display = 'block';
 
-        // Standardansicht auf Tag setzen
-        map.addLayer(dayNoiseLayer);
-        if (dayNightToggle.checked) {
-            // Wenn der Schieberegler auf "Nacht" steht
+        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
+        if (document.getElementById('dayNightToggle').checked) {
             map.addLayer(nightNoiseLayer);
-            map.removeLayer(dayNoiseLayer);
-            toggleLabel.textContent = "Nacht";
+            dayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" als Text an
+        } else {
+            // Ansonsten den Tag-Layer hinzufügen
+            map.addLayer(dayNoiseLayer);
+            dayNightLabel.textContent = 'Tag'; // Zeige "Tag" als Text an
         }
     } else {
-        // Checkbox deaktiviert -> Schieberegler deaktivieren und Layer entfernen
-        dayNightToggle.disabled = true; // Schieberegler deaktivieren
-        document.querySelector('.switch').classList.add('disabled'); // Styling hinzufügen
-
-        // Entferne beide Layer, falls aktiv
+        // Wenn die Checkbox deaktiviert ist, den Schieberegler verstecken und beide Layer entfernen
+        dayNightToggle.style.display = 'none';
         map.removeLayer(dayNoiseLayer);
         map.removeLayer(nightNoiseLayer);
-        toggleLabel.textContent = "Tag"; // Standardanzeige
-        dayNightToggle.checked = false; // Schieberegler auf Tag zurücksetzen
     }
 });
 
-// Event-Listener für den Tag/Nacht-Schieberegler
-dayNightToggle.addEventListener('change', function() {
-    if (dayNightToggle.disabled) return; // Wenn der Schieberegler deaktiviert ist, nichts tun
-
+// Event-Listener für den Schieberegler Tag/Nacht
+document.getElementById('dayNightToggle').addEventListener('change', function() {
     if (this.checked) {
         // Nachtmodus
         map.removeLayer(dayNoiseLayer);
         map.addLayer(nightNoiseLayer);
-        toggleLabel.textContent = "Nacht";
+        dayNightLabel.textContent = 'Nacht'; // Ändere den Text auf "Nacht"
     } else {
         // Tagmodus
         map.removeLayer(nightNoiseLayer);
         map.addLayer(dayNoiseLayer);
-        toggleLabel.textContent = "Tag";
+        dayNightLabel.textContent = 'Tag'; // Ändere den Text auf "Tag"
     }
 });
-
+/************************************************************************************************** */
 /************************************************************************************************** */
 
 // Straßenlärm-Layer von Swisstopo
@@ -148,7 +147,8 @@ L.control.zoom({
 
 // Entfernt den Zoom-In-Button manuell aus dem DOM
 document.querySelector('.leaflet-control-zoom-in').remove();
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Popup bei Klick auf die Karte anzeigen
 map.on('click', (e) => {
     const { lat, lng } = e.latlng;
@@ -157,7 +157,8 @@ map.on('click', (e) => {
         .setContent(`Koordinaten: <br> Latitude: ${lat.toFixed(5)} <br> Longitude: ${lng.toFixed(5)}`)
         .openOn(map);
 });
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Helper-Funktion zum Laden von Daten
 const fetchData = (url, callback) => {
     $.getJSON(url, callback).fail(() => console.error(`Fehler beim Laden von ${url}`));
@@ -185,7 +186,8 @@ const loadMarkers = (url, icon, clusterGroup, flagObj) => {
         map.addLayer(clusterGroup); // Wenn die Daten bereits geladen sind, füge die Gruppe direkt hinzu
     }
 };
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Icon-Einstellungen
 const iconOptions = (url) => ({
     iconUrl: url,
@@ -271,7 +273,8 @@ $('#filterConstruction').change(() => {
         map.removeLayer(clusterGroups.construction);
     }
 });
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Geocoding über den "Suche"-Button
 $('#searchForm').submit((e) => {
     e.preventDefault();
@@ -297,7 +300,8 @@ $('#searchForm').submit((e) => {
             });
     }
 });
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Adressvorschläge bei Eingabe anzeigen
 $('#addressInput').on('input', function () {
     var address = $(this).val().trim();
@@ -359,7 +363,8 @@ $(document).on('click', '#suggestions li', function() {
     // Leere die Vorschlagsliste
     $('#suggestions').empty();
 });
-
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Geolocation-Funktion zur Ermittlung des aktuellen Standorts
 function getLocation() {
     if (navigator.geolocation) {
@@ -411,3 +416,5 @@ function showError(error) {
 document.getElementById('locationButton').addEventListener('click', function() {
     getLocation(); // Starte die Standortabfrage
 });
+/************************************************************************************************** */
+/************************************************************************************************** */

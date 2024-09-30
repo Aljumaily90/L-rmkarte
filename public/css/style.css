@@ -150,47 +150,62 @@
 /************************************
  *  Kartenansicht-Auswahlleiste
  ************************************/
-
-/* Styling für die Kartenansicht-Auswahlleiste */
+/* Styling für das Dropdown der Kartenansicht */
 .map-view-selector {
-    display: flex; /* Elemente horizontal anordnen */
-    justify-content: center; /* Zentriert die Buttons */
-    padding: 5px 10px; /* Abstand um die Buttons */
-    margin-bottom: 10px; /* Abstand zu den Filter-Icons */
+    display: inline-block;
+    margin-left: 10px; /* Abstand zum Filter-Dropdown */
 }
 
-/* Buttons in der Kartenansicht-Auswahlleiste */
-.map-view-btn {
-    background-color: #fff; /* Hintergrundfarbe der Buttons */
-    border: 1px solid #ccc; /* Umrandung der Buttons */
-    margin: 0 5px; /* Abstand zwischen den Buttons */
-    padding: 10px 20px; /* Innenabstand der Buttons */
-    cursor: pointer; /* Cursor als Hand anzeigen */
-    transition: background-color 0.3s ease; /* Übergang für Hover-Effekte */
-    border-radius: 50px;
+.map-view-selector .btn {
+    background-color: transparent; /* Transparentes Design für das Icon */
+    border: none; /* Kein Rahmen für den Button */
+    padding: 0; /* Kein zusätzlicher Abstand */
+    cursor: pointer;
 }
 
-/* Hover-Effekt für die Buttons */
-.map-view-btn:hover {
-    background-color: #e0e0e0; /* Leicht dunklere Hintergrundfarbe beim Hover */
+.map-view-selector .dropdown-menu {
+    min-width: 150px; /* Breite des Dropdowns */
+    text-align: left;
 }
 
-/* Aktiver Button */
-.map-view-btn.active {
-    background-color: #007bff; /* Aktive Hintergrundfarbe */
-    color: #fff; /* Textfarbe für aktive Ansicht */
-    border-color: #0056b3; /* Umrandung für aktive Ansicht */
+.map-view-selector .dropdown-item {
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.map-view-selector .dropdown-item:hover {
+    background-color: #f0f0f0; /* Hintergrundfarbe bei Hover */
+}
+
+.map-view-selector .dropdown-item.active {
+    background-color: #007bff; /* Farbe für aktive Auswahl */
+    color: white;
+}
+#mapViewDropdown img {
+    filter: brightness(0) invert(1); /* Verändert Schwarz in Weiß */
 }
 
 
-/* Styling für den Schieberegler (Tag/Nacht) */
+/************************************
+ *  Styling für den Schieberegler (Tag/Nacht)
+ ************************************/
+
 .day-night-toggle {
     display: flex;
     align-items: center;
-    margin: 10px 0 0 20px; /* Abstand nach oben und unten */
+    margin: 10px ; /* Abstand nach oben und unten */
     
 }
 
+#dayNightLabel {
+    font-weight: bold;
+    flex-direction: column; /* Elemente untereinander anordnen */
+    font-size: 16px; /* Größe des Textes anpassen */
+    color: #ccc;
+    gap: 5px; /* Abstand zwischen Schieberegler und dem Tag/Nacht-Text */
+
+    
+}
 .day-night-toggle span {
     margin-right: 10px; /* Abstand zwischen Label und Schieberegler */
     font-size: 16px; /* Schriftgröße */
@@ -254,3 +269,7 @@ input:checked + .slider:before {
 #toggleLabel{
     color: #fff;
 }
+
+/************************************
+ *  ****** ****** ****** ******* ****
+ ************************************/
