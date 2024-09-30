@@ -8,6 +8,11 @@
     width: 100%; /* Volle Breite */
     position: relative; /* Relative Positionierung */
 }
+/* Filter */
+#offcanvasDarkNavbar {
+    width: 280px; /* Standardbreite */
+}
+
 
 /************************************
  *  Suchformular und Eingabefeld-Stile
@@ -101,7 +106,7 @@
 }
 
 /************************************
- *  Anpassungen für kleinere Bildschirme
+ *  Anpassungen für kleinere Bildschirme 768px
  ************************************/
 
  @media (max-width: 768px) {
@@ -109,7 +114,9 @@
     .navbar {
         flex-wrap: wrap; /* Elemente untereinander anordnen, wenn nötig */
     }
-
+    #offcanvasDarkNavbar {
+        width: 250px; /* Kleinere Breite auf Tablets oder kleineren Bildschirmen */
+    }
     /* Suchformular Anpassung */
     #searchForm {
         flex-direction: column; /* Elemente untereinander anordnen */
@@ -146,7 +153,14 @@
         margin: 5px 0; /* Abstand nach oben und unten */
     }
 }
-
+/************************************
+ *  Anpassungen für kleinere Bildschirme 576px
+ ************************************/
+@media (max-width: 576px) {
+    #offcanvasDarkNavbar {
+        width: 200px; /* Noch kleinere Breite auf sehr kleinen Geräten */
+    }
+}
 /************************************
  *  Kartenansicht-Auswahlleiste
  ************************************/
