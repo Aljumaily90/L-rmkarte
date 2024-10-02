@@ -31,6 +31,9 @@
                 <!-- Markenname bzw. Logo -->
                     <a class="navbar-brand p-2 g-col-6" href="/index.html">Lärmkarte Schweiz</a>
                     <a class="navbar-brand" href="./about.html">Über</a>
+                    <a class="navbar-brand" href="./about.html">Über</a>
+                    <a class="navbar-brand" href="./about.html">Über</a>
+                    <a class="navbar-brand" href="./about.html">Über</a>
                 </div>
             
                 <!-- Suchformular zur Adresssuche -->
@@ -59,7 +62,7 @@
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="mapViewDropdown">
                         <li><a class="dropdown-item" href="#" id="standardView">Standardansicht</a></li>
-                        <li><a class="dropdown-item" href="#" id="satelliteView">Satellit</a></li>
+                        <li><a class="dropdown-item" href="#" id="satelliteView">Satellitenansicht</a></li>
                     </ul>
                 </div>
 
@@ -71,7 +74,7 @@
                 
 
                 <!-- Offcanvas-Menü für die Filteroptionen -->
-                <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
                     <!-- Kopfbereich des Offcanvas-Menüs mit Schließen-Button -->
                     <div class="offcanvas-header">
                         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Filter</h5>
@@ -88,6 +91,17 @@
                         <span id="dayNightLabel" class="toggle-label">Tag</span>
                     </div>
 
+                    <!-- Schieberegler für Tag/Nacht bei Zuglärm -->
+                    <div class="train-day-night-toggle">
+                        <label class="switch">
+                            <!-- Schieberegler -->
+                            <input type="checkbox" id="trainDayNightToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <!-- Text für Tag/Nacht -->
+                        <span id="trainDayNightLabel" class="toggle-label">Tag</span>
+                    </div>
+
                     <!-- Offcanvas-Körper mit Filteroptionen (Checkboxen) -->
                     <div class="offcanvas-body">
                         <form id="filterForm">
@@ -95,14 +109,14 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="noise" id="filterNoise">
                                 <label class="form-check-label" for="filterNoise">
-                                    <img src="./images/Traffic.png" alt="Traffic" width="20"> Strassenlärm
+                                    <img src="./images/Traffic.png" alt="Traffic" width="20"> Strassenverkehrslärm
                                 </label>
                             </div>
-                            <!-- Checkbox für Spielplätze -->
+                             <!-- Checkbox für Zuglärm -->
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="playgrounds" id="filterPlaygrounds">
-                                <label class="form-check-label" for="filterPlaygrounds">
-                                    <img src="./images/playground-icon.png" alt="Traffic" width="20"> Zuglärm
+                                <input class="form-check-input" type="checkbox" value="train_noise" id="filterTrainNoise">
+                                <label class="form-check-label" for="filterTrainNoise">
+                                    <img src="./images/train-icon.png" alt="Train Noise" width="20"> Eisenbahnlärm
                                 </label>
                             </div>
 
@@ -134,14 +148,17 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="schools" id="filterSchools">
                                 <label class="form-check-label" for="filterSchools">
-                                    <img src="./images/school-icon.png" alt="Traffic" width="20"> Schulen
+                                    <img src="./images/school-icon.png" alt="Traffic" width="20"> Militärflugplätze
                                 </label>
-                                
                             </div>
 
-                            
-
-                            
+                            <!-- Checkbox für Schulen -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="schools" id="filterSchools">
+                                <label class="form-check-label" for="filterSchools">
+                                    <img src="./images/school-icon.png" alt="Traffic" width="20"> Flughäfen
+                                </label>
+                            </div>
 
                         </form>
                     </div>

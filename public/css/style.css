@@ -284,6 +284,30 @@ input:checked + .slider:before {
     color: #fff;
 }
 
+/*****************************************
+ ***  Zuglärm-Tag/Nacht-Schieberegler ****
+ *****************************************/
+ /* Zuglärm-Tag/Nacht-Schieberegler standardmäßig verstecken */
+.train-day-night-toggle {
+    display: none;
+    margin-top: 10px;
+}
+
+/* Flex-Layout für Schieberegler und Label */
+.train-day-night-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Styling für das Zuglärm-Tag/Nacht-Label */
+#trainDayNightLabel {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+}
+
 /************************************
  *  ****** ****** ****** ******* ****
  ************************************/

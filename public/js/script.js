@@ -1,3 +1,5 @@
+/************************************************************************************ */
+/******************************************** Main**************************************** */
 // Initialisiere die Variable 'marker' global, damit sie in allen Funktionen verwendet werden kann
 var marker;
 var searchCache = {};  // Cache für Suchanfragen
@@ -14,14 +16,14 @@ var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo
     subdomains: '123',
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
-
-var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+// Swisstopo Satellitenansicht
+var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg', {
     maxZoom: 19,
     minZoom: 9,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
-
-    attribution: '&copy; <a href="https://www.esri.com/">Esri</a>'
+    subdomains: '123',
+    attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
 
 // Standard-Karte beim Laden hinzufügen
@@ -62,7 +64,7 @@ if (!localStorage.getItem('viewChangeHintShown')) {
     localStorage.setItem('viewChangeHintShown', 'true');
 }
 /************************************************************************************ */
-/************************************************************************************ */
+/******************************************** Strassen Lärem**************************************** */
 // Erfasse den Schieberegler, die Checkbox und die Layer für Tag/Nacht-Lärm
 var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schieberegler für Tag/Nacht
 var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schieberegler für Tag/Nacht
@@ -114,25 +116,53 @@ noiseCheckbox.addEventListener('change', function() {
     }
 });
 
-// Event-Listener für den Schieberegler Tag/Nacht
-document.getElementById('dayNightToggle').addEventListener('change', function() {
-    if (this.checked) {
-        // Nachtmodus
+// Eventlistener für die Straßenlärm-Checkbox
+$('#filterNoise').change(() => {
+    if ($('#filterNoise').is(':checked')) {
+        // Checkbox ist aktiviert, Schieberegler anzeigen und Lärm-Layer hinzufügen
+        dayNightToggle.style.display = 'block';
+
+        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
+        if ($('#dayNightToggle').is(':checked')) {
+            map.addLayer(nightNoiseLayer);
+            dayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
+        } else {
+            // Ansonsten den Tag-Layer hinzufügen
+            map.addLayer(dayNoiseLayer);
+            dayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
+        }
+    } else {
+        // Checkbox ist deaktiviert, Schieberegler verstecken und Layer entfernen
+        dayNightToggle.style.display = 'none';
+        map.removeLayer(dayNoiseLayer);
+        map.removeLayer(nightNoiseLayer);
+    }
+});
+
+// Eventlistener für den Tag/Nacht-Schieberegler (Straßenlärm)
+$('#dayNightToggle').change(() => {
+    if ($('#dayNightToggle').is(':checked')) {
+        // Nachtmodus aktivieren
         map.removeLayer(dayNoiseLayer);
         map.addLayer(nightNoiseLayer);
         dayNightLabel.textContent = 'Nacht'; // Ändere den Text auf "Nacht"
     } else {
-        // Tagmodus
+        // Tagmodus aktivieren
         map.removeLayer(nightNoiseLayer);
         map.addLayer(dayNoiseLayer);
         dayNightLabel.textContent = 'Tag'; // Ändere den Text auf "Tag"
     }
 });
-/************************************************************************************************** */
-/************************************************************************************************** */
 
-// Straßenlärm-Layer von Swisstopo
-const noiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
+/************************************************************************************************** */
+/***********************Zuglärm Layer für Tag/Nach************************************************ */
+// Erfasse die Checkbox für den Zuglärm und den Schieberegler
+var trainNoiseCheckbox = document.getElementById('filterTrainNoise'); // Checkbox für Zuglärm
+var trainDayNightToggle = document.querySelector('.train-day-night-toggle'); // Der Schieberegler für Zuglärm Tag/Nacht
+var trainDayNightLabel = document.getElementById('trainDayNightLabel'); // Label für Tag/Nacht bei Zuglärm
+
+// Definiere die Layer für Zuglärm Tag/Nacht
+var trainDayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-bahnlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
     minZoom: 12,
     maxZoom: 19,
     subdomains: '1234',
@@ -140,6 +170,81 @@ const noiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm
     attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
 });
 
+var trainNightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-bahnlaerm_nacht/default/current/3857/{z}/{x}/{y}.png', {
+    minZoom: 12,
+    maxZoom: 19,
+    subdomains: '1234',
+    opacity: 0.7,
+    attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
+});
+
+// Initial: Schieberegler und Zuglärmlayer verstecken
+trainDayNightToggle.style.display = 'none';
+trainDayNoiseLayer.remove();
+trainNightNoiseLayer.remove();
+
+// Event-Listener für die Zuglärm-Checkbox
+trainNoiseCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+        // Wenn die Checkbox für Zuglärm aktiviert ist, den Schieberegler anzeigen
+        trainDayNightToggle.style.display = 'block';
+
+        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Zuglärm-Layer hinzufügen
+        if (document.getElementById('trainDayNightToggle').checked) {
+            map.addLayer(trainNightNoiseLayer);
+            trainDayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
+        } else {
+            // Ansonsten den Tag-Zuglärm-Layer hinzufügen
+            map.addLayer(trainDayNoiseLayer);
+            trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
+        }
+    } else {
+        // Wenn die Checkbox deaktiviert ist, den Schieberegler verstecken und beide Layer entfernen
+        trainDayNightToggle.style.display = 'none';
+        map.removeLayer(trainDayNoiseLayer);
+        map.removeLayer(trainNightNoiseLayer);
+    }
+});
+
+// Eventlistener für den Schieberegler Tag/Nacht (Zuglärm)
+$('#trainDayNightToggle').change(() => {
+    if ($('#trainDayNightToggle').is(':checked')) {
+        // Nachtmodus aktivieren
+        map.removeLayer(trainDayNoiseLayer);
+        map.addLayer(trainNightNoiseLayer);
+        trainDayNightLabel.textContent = 'Nacht'; // Ändere den Text auf "Nacht"
+    } else {
+        // Tagmodus aktivieren
+        map.removeLayer(trainNightNoiseLayer);
+        map.addLayer(trainDayNoiseLayer);
+        trainDayNightLabel.textContent = 'Tag'; // Ändere den Text auf "Tag"
+    }
+});
+
+// Eventlistener für die Zuglärm-Checkbox
+$('#filterTrainNoise').change(() => {
+    if (map.hasLayer(trainDayNoiseLayer) || map.hasLayer(trainNightNoiseLayer)) {
+        // Wenn einer der Zuglärm-Layer bereits vorhanden ist, entferne sie
+        map.removeLayer(trainDayNoiseLayer);
+        map.removeLayer(trainNightNoiseLayer);
+        trainDayNightToggle.style.display = 'none'; // Schieberegler verstecken
+    } else {
+        // Schieberegler anzeigen
+        trainDayNightToggle.style.display = 'block';
+
+        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
+        if ($('#trainDayNightToggle').is(':checked')) {
+            map.addLayer(trainNightNoiseLayer);
+            trainDayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
+        } else {
+            // Ansonsten den Tag-Layer hinzufügen
+            map.addLayer(trainDayNoiseLayer);
+            trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
+        }
+    }
+});
+/************************************************************************************************** */
+/************************************************************************************************** */
 // Positioniere die Zoom-Steuerungen manuell
 L.control.zoom({
     position: 'bottomleft' // Alternativen: 'topleft', 'bottomleft', 'bottomright'
@@ -148,7 +253,7 @@ L.control.zoom({
 // Entfernt den Zoom-In-Button manuell aus dem DOM
 document.querySelector('.leaflet-control-zoom-in').remove();
 /************************************************************************************************** */
-/************************************************************************************************** */
+/***********************************************Koordinaten*************************************************** */
 // Popup bei Klick auf die Karte anzeigen
 map.on('click', (e) => {
     const { lat, lng } = e.latlng;
@@ -158,7 +263,7 @@ map.on('click', (e) => {
         .openOn(map);
 });
 /************************************************************************************************** */
-/************************************************************************************************** */
+/**************************************************Helper-Funktion************************************************ */
 // Helper-Funktion zum Laden von Daten
 const fetchData = (url, callback) => {
     $.getJSON(url, callback).fail(() => console.error(`Fehler beim Laden von ${url}`));
@@ -187,8 +292,8 @@ const loadMarkers = (url, icon, clusterGroup, flagObj) => {
     }
 };
 /************************************************************************************************** */
-/************************************************************************************************** */
-// Icon-Einstellungen
+/************************************Icon / Checkbox*********************************************** */
+// Icon-Einstellungen-Einstellungen
 const iconOptions = (url) => ({
     iconUrl: url,
     iconSize: [32, 32],
@@ -220,14 +325,7 @@ let schoolsLoaded = { loaded: false };
 let churchesLoaded = { loaded: false };
 let constructionsLoaded = { loaded: false };
 
-// Eventlistener für Checkboxen
-$('#filterNoise').change(() => {
-    if (map.hasLayer(noiseLayer)) {
-        map.removeLayer(noiseLayer);
-    } else {
-        map.addLayer(noiseLayer);
-    }
-});
+
 
 // Eventlistener für die Spitäler-Checkbox
 $('#filterHospitals').change(() => {
@@ -238,14 +336,7 @@ $('#filterHospitals').change(() => {
     }
 });
 
-// Eventlistener für die Spielplatz-Checkbox
-$('#filterPlaygrounds').change(() => {
-    if ($('#filterPlaygrounds').is(':checked')) {
-        loadMarkers('/api/playgrounds', icons.playground, clusterGroups.playground, playgroundsLoaded);
-    } else {
-        map.removeLayer(clusterGroups.playground);
-    }
-});
+
 
 // Eventlistener für die Schul-Checkbox
 $('#filterSchools').change(() => {
@@ -253,6 +344,29 @@ $('#filterSchools').change(() => {
         loadMarkers('/api/schools', icons.school, clusterGroups.school, schoolsLoaded);
     } else {
         map.removeLayer(clusterGroups.school);
+    }
+});
+
+// Eventlistener für die Zuglärm-Checkbox
+$('#filterTrainNoise').change(() => {
+    if (map.hasLayer(trainDayNoiseLayer) || map.hasLayer(trainNightNoiseLayer)) {
+        // Wenn einer der Zuglärm-Layer bereits vorhanden ist, entferne sie
+        map.removeLayer(trainDayNoiseLayer);
+        map.removeLayer(trainNightNoiseLayer);
+        trainDayNightToggle.style.display = 'none'; // Schieberegler verstecken
+    } else {
+        // Schieberegler anzeigen
+        trainDayNightToggle.style.display = 'block';
+
+        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
+        if ($('#trainDayNightToggle').is(':checked')) {
+            map.addLayer(trainNightNoiseLayer);
+            trainDayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
+        } else {
+            // Ansonsten den Tag-Layer hinzufügen
+            map.addLayer(trainDayNoiseLayer);
+            trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
+        }
     }
 });
 
@@ -274,7 +388,7 @@ $('#filterConstruction').change(() => {
     }
 });
 /************************************************************************************************** */
-/************************************************************************************************** */
+/***********************************************Suche*************************************************** */
 // Geocoding über den "Suche"-Button
 $('#searchForm').submit((e) => {
     e.preventDefault();
@@ -301,7 +415,7 @@ $('#searchForm').submit((e) => {
     }
 });
 /************************************************************************************************** */
-/************************************************************************************************** */
+/**********************************************Adressvorschläge**************************************************** */
 // Adressvorschläge bei Eingabe anzeigen
 $('#addressInput').on('input', function () {
     var address = $(this).val().trim();
@@ -364,7 +478,7 @@ $(document).on('click', '#suggestions li', function() {
     $('#suggestions').empty();
 });
 /************************************************************************************************** */
-/************************************************************************************************** */
+/***************************************Localisierung*********************************************************** */
 // Geolocation-Funktion zur Ermittlung des aktuellen Standorts
 function getLocation() {
     if (navigator.geolocation) {
@@ -416,5 +530,3 @@ function showError(error) {
 document.getElementById('locationButton').addEventListener('click', function() {
     getLocation(); // Starte die Standortabfrage
 });
-/************************************************************************************************** */
-/************************************************************************************************** */
