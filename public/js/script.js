@@ -26,13 +26,24 @@ var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
 
+// Schwarz-Weiß-Karte von Swisstopo
+var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg', {
+    maxZoom: 19,
+    minZoom: 9,
+    updateWhenIdle: true,
+    useCache: true,
+    subdomains: '123',
+    attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
+});
 // Standard-Karte beim Laden hinzufügen
 map.addLayer(standardLayer);
 
-// Event-Listener für das Wechseln der Kartenansicht
+
+// Event-Listener für das Wechseln zur Standardansicht
 document.getElementById('standardView').addEventListener('click', function(e) {
     e.preventDefault();
     map.removeLayer(satelliteLayer);
+    map.removeLayer(grayscaleLayer);
     map.addLayer(standardLayer);
     document.querySelectorAll('.dropdown-item').forEach(function(item) {
         item.classList.remove('active');
@@ -40,10 +51,24 @@ document.getElementById('standardView').addEventListener('click', function(e) {
     this.classList.add('active');
 });
 
+// Event-Listener für das Wechseln zur Satellitenansicht
 document.getElementById('satelliteView').addEventListener('click', function(e) {
     e.preventDefault();
     map.removeLayer(standardLayer);
+    map.removeLayer(grayscaleLayer);
     map.addLayer(satelliteLayer);
+    document.querySelectorAll('.dropdown-item').forEach(function(item) {
+        item.classList.remove('active');
+    });
+    this.classList.add('active');
+});
+
+// Event-Listener für das Wechseln zur Schwarz/Weiß-Karte
+document.getElementById('grayscaleView').addEventListener('click', function(e) {
+    e.preventDefault();
+    map.removeLayer(standardLayer);
+    map.removeLayer(satelliteLayer);
+    map.addLayer(grayscaleLayer);
     document.querySelectorAll('.dropdown-item').forEach(function(item) {
         item.classList.remove('active');
     });
