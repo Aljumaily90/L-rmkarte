@@ -12,7 +12,11 @@
 #offcanvasDarkNavbar {
     width: 280px; /* Standardbreite */
 }
-
+/* Standard-Hintergrundfarbe für alle Dropdown-Optionen */
+.dropdown-item {
+    background-color: white;
+    color: black;
+}
 
 /************************************
  *  Suchformular und Eingabefeld-Stile
@@ -197,6 +201,18 @@
 }
 #mapViewDropdown img {
     filter: brightness(0) invert(1); /* Verändert Schwarz in Weiß */
+}
+
+/* Blaues Highlight nur für die ausgewählte (aktive) Ansicht */
+.dropdown-item.active {
+    background-color: #007bff; /* Blau */
+    color: white;
+}
+
+/* Hover-Farbe für nicht ausgewählte Optionen */
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+    color: black;
 }
 
 

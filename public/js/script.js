@@ -38,48 +38,63 @@ var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
 // Standard-Karte beim Laden hinzufügen
 map.addLayer(standardLayer);
 
-
-// Event-Listener für das Wechseln zur Standardansicht
-document.getElementById('standardView').addEventListener('click', function(e) {
-    e.preventDefault();
-    map.removeLayer(satelliteLayer);
-    map.removeLayer(grayscaleLayer);
-    map.addLayer(standardLayer);
-    document.querySelectorAll('.dropdown-item').forEach(function(item) {
-        item.classList.remove('active');
+// Eventlistener zum Wechseln der Kartenansicht
+function changeMapLayer(newLayer) {
+    // Entferne alle Layer
+    map.eachLayer(function (layer) {
+        map.removeLayer(layer);
     });
-    this.classList.add('active');
+
+    // Füge die neue Kartenansicht hinzu
+    map.addLayer(newLayer);
+
+    // Überprüfe, ob Straßenlärm aktiviert ist
+    if ($('#filterNoise').is(':checked')) {
+        if ($('#dayNightToggle').is(':checked')) {
+            map.addLayer(nightNoiseLayer); // Füge den Nacht-Lärm-Layer hinzu
+        } else {
+            map.addLayer(dayNoiseLayer); // Füge den Tag-Lärm-Layer hinzu
+        }
+    }
+
+    // Überprüfe, ob Zuglärm aktiviert ist
+    if ($('#filterTrainNoise').is(':checked')) {
+        if ($('#trainDayNightToggle').is(':checked')) {
+            map.addLayer(trainNightNoiseLayer); // Füge den Nacht-Zuglärm-Layer hinzu
+        } else {
+            map.addLayer(trainDayNoiseLayer); // Füge den Tag-Zuglärm-Layer hinzu
+        }
+    }
+}
+
+
+// Event-Listener für das Wechseln der Kartenansicht
+document.getElementById('standardView').addEventListener('click', function (e) {
+    e.preventDefault();
+    changeMapLayer(standardLayer);
+    updateActiveButton(this);
 });
 
-// Event-Listener für das Wechseln zur Satellitenansicht
-document.getElementById('satelliteView').addEventListener('click', function(e) {
+document.getElementById('satelliteView').addEventListener('click', function (e) {
     e.preventDefault();
-    map.removeLayer(standardLayer);
-    map.removeLayer(grayscaleLayer);
-    map.addLayer(satelliteLayer);
-    document.querySelectorAll('.dropdown-item').forEach(function(item) {
-        item.classList.remove('active');
-    });
-    this.classList.add('active');
+    changeMapLayer(satelliteLayer);
+    updateActiveButton(this);
 });
 
-// Event-Listener für das Wechseln zur Schwarz/Weiß-Karte
-document.getElementById('grayscaleView').addEventListener('click', function(e) {
+document.getElementById('grayscaleView').addEventListener('click', function (e) {
     e.preventDefault();
-    map.removeLayer(standardLayer);
-    map.removeLayer(satelliteLayer);
-    map.addLayer(grayscaleLayer);
-    document.querySelectorAll('.dropdown-item').forEach(function(item) {
-        item.classList.remove('active');
-    });
-    this.classList.add('active');
+    changeMapLayer(grayscaleLayer);
+    updateActiveButton(this);
 });
 
-// Funktion zum Aktualisieren des aktiven Buttons
+// Funktion zum Wechseln der Kartenansicht und Setzen der aktiven Klasse
 function updateActiveButton(activeButton) {
-    document.querySelectorAll('.map-view-btn').forEach(btn => {
-        btn.classList.remove('active');
+    // Entferne die 'active'-Klasse von allen Dropdown-Items
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.classList.remove('active');
     });
+
+    // Füge die 'active'-Klasse nur dem geklickten Button hinzu
     activeButton.classList.add('active');
 }
 
