@@ -10,7 +10,7 @@
 }
 /* Filter */
 #offcanvasDarkNavbar {
-    width: 280px; /* Standardbreite */
+    width: 350px; /* Standardbreite */
 }
 /* Standard-Hintergrundfarbe für alle Dropdown-Optionen */
 .dropdown-item {
@@ -220,33 +220,22 @@
  *  Styling für den Schieberegler (Tag/Nacht)
  ************************************/
 
-.day-night-toggle {
-    display: flex;
-    align-items: center;
-    margin: 10px ; /* Abstand nach oben und unten */
-    
+/* Standardmäßig wird der Schieberegler versteckt */
+/* Verstecke standardmäßig die Schieberegler */
+.day-night-toggle, .train-day-night-toggle {
+    display: none;
+}
+/* Sobald die Checkbox aktiviert ist, soll der Schieberegler eingeblendet werden */
+.show-toggle {
+    display: flex; /* Zeigt den Schieberegler an, wenn die Klasse hinzugefügt wird */
 }
 
-#dayNightLabel {
-    font-weight: bold;
-    flex-direction: column; /* Elemente untereinander anordnen */
-    font-size: 16px; /* Größe des Textes anpassen */
-    color: #ccc;
-    gap: 5px; /* Abstand zwischen Schieberegler und dem Tag/Nacht-Text */
-
-    
-}
-.day-night-toggle span {
-    margin-right: 10px; /* Abstand zwischen Label und Schieberegler */
-    font-size: 16px; /* Schriftgröße */
-    color: #333; /* Schriftfarbe */
-}
-
+/* Stil für den Tag/Nacht-Schieberegler */
 .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 34px;
+    height: 20px;
 }
 
 .switch input {
@@ -270,22 +259,22 @@
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: .4s;
     border-radius: 50%; /* Runde Form für den Schieberegler */
 }
-
 input:checked + .slider {
-    background-color: #007bff; /* Farbe des aktivierten Reglers */
+    background-color: #2196F3;
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px); /* Position des Kreises bei aktivierter Ansicht */
+    transform: translateX(14px);
 }
+
 
 /* Deaktivierter Stil für den Schieberegler */
 .switch.disabled .slider {
@@ -296,34 +285,36 @@ input:checked + .slider:before {
 .switch.disabled .slider:before {
     background-color: #ccc; /* Graue Farbe für den Regler-Knopf im deaktivierten Zustand */
 }
-#toggleLabel{
-    color: #fff;
-}
-
-/*****************************************
- ***  Zuglärm-Tag/Nacht-Schieberegler ****
- *****************************************/
- /* Zuglärm-Tag/Nacht-Schieberegler standardmäßig verstecken */
-.train-day-night-toggle {
-    display: none;
-    margin-top: 10px;
-}
-
-/* Flex-Layout für Schieberegler und Label */
-.train-day-night-toggle {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
 /* Styling für das Zuglärm-Tag/Nacht-Label */
 #trainDayNightLabel {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
 }
 
+/* Styling für das Straßenlärm-Tag/Nacht-Label */
+#dayNightLabel {
+    font-weight: bold;
+    font-size: 16px;
+    color: #f0eded; /* Farbe des Textes */
+}
+
+/* Styling für das Tag/Nacht-Label */
+#toggleLabel {
+    color: #e2dfdf;
+}
+
+/* Abstand und Flexbox-Anpassung für die Schieberegler und Checkboxen */
+.form-check {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-check .d-flex {
+    gap: 10px; /* Abstand zwischen Checkbox und Schieberegler */
+}
 /************************************
  *  ****** ****** ****** ******* ****
  ************************************/

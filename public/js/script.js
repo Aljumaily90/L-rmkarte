@@ -127,40 +127,15 @@ var nightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.la
 });
 
 
-
-// Initial: Schieberegler und Lärmlayer verstecken
-dayNightToggle.style.display = 'none';
-dayNoiseLayer.remove();
-nightNoiseLayer.remove();
-
 // Event-Listener für die Straßenlärm-Checkbox
-noiseCheckbox.addEventListener('change', function() {
+$('#filterNoise').change(function() {
+    var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schieberegler für Straßenlärm Tag/Nacht
+    var dayNightLabel = document.getElementById('dayNightLabel'); // Label für Tag/Nacht (Straßenlärm)
+
+
     if (this.checked) {
-        // Wenn die Checkbox für Straßenlärm aktiviert ist, den Schieberegler anzeigen
-        dayNightToggle.style.display = 'block';
-
-        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
-        if (document.getElementById('dayNightToggle').checked) {
-            map.addLayer(nightNoiseLayer);
-            dayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" als Text an
-        } else {
-            // Ansonsten den Tag-Layer hinzufügen
-            map.addLayer(dayNoiseLayer);
-            dayNightLabel.textContent = 'Tag'; // Zeige "Tag" als Text an
-        }
-    } else {
-        // Wenn die Checkbox deaktiviert ist, den Schieberegler verstecken und beide Layer entfernen
-        dayNightToggle.style.display = 'none';
-        map.removeLayer(dayNoiseLayer);
-        map.removeLayer(nightNoiseLayer);
-    }
-});
-
-// Eventlistener für die Straßenlärm-Checkbox
-$('#filterNoise').change(() => {
-    if ($('#filterNoise').is(':checked')) {
-        // Checkbox ist aktiviert, Schieberegler anzeigen und Lärm-Layer hinzufügen
-        dayNightToggle.style.display = 'block';
+        // Checkbox ist aktiviert, Schieberegler anzeigen
+        dayNightToggle.classList.add('show-toggle'); // Schieberegler anzeigen
 
         // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
         if ($('#dayNightToggle').is(':checked')) {
@@ -173,15 +148,17 @@ $('#filterNoise').change(() => {
         }
     } else {
         // Checkbox ist deaktiviert, Schieberegler verstecken und Layer entfernen
-        dayNightToggle.style.display = 'none';
+        dayNightToggle.classList.remove('show-toggle'); // Schieberegler verstecken
         map.removeLayer(dayNoiseLayer);
         map.removeLayer(nightNoiseLayer);
     }
 });
 
 // Eventlistener für den Tag/Nacht-Schieberegler (Straßenlärm)
-$('#dayNightToggle').change(() => {
-    if ($('#dayNightToggle').is(':checked')) {
+$('#dayNightToggle').change(function() {
+    var dayNightLabel = document.getElementById('dayNightLabel'); // Label für Tag/Nacht (Straßenlärm)
+
+    if (this.checked) {
         // Nachtmodus aktivieren
         map.removeLayer(dayNoiseLayer);
         map.addLayer(nightNoiseLayer);
@@ -218,59 +195,17 @@ var trainNightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.ba
     attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
 });
 
-// Initial: Schieberegler und Zuglärmlayer verstecken
-trainDayNightToggle.style.display = 'none';
-trainDayNoiseLayer.remove();
-trainNightNoiseLayer.remove();
+
 
 // Event-Listener für die Zuglärm-Checkbox
-trainNoiseCheckbox.addEventListener('change', function() {
+$('#filterTrainNoise').change(function() {
+    var trainDayNightToggle = document.querySelector('.train-day-night-toggle'); // Der Schieberegler für Zuglärm Tag/Nacht
+    var trainDayNightLabel = document.getElementById('trainDayNightLabel'); // Label für Tag/Nacht (Zuglärm)
+
+
     if (this.checked) {
-        // Wenn die Checkbox für Zuglärm aktiviert ist, den Schieberegler anzeigen
-        trainDayNightToggle.style.display = 'block';
-
-        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Zuglärm-Layer hinzufügen
-        if (document.getElementById('trainDayNightToggle').checked) {
-            map.addLayer(trainNightNoiseLayer);
-            trainDayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
-        } else {
-            // Ansonsten den Tag-Zuglärm-Layer hinzufügen
-            map.addLayer(trainDayNoiseLayer);
-            trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
-        }
-    } else {
-        // Wenn die Checkbox deaktiviert ist, den Schieberegler verstecken und beide Layer entfernen
-        trainDayNightToggle.style.display = 'none';
-        map.removeLayer(trainDayNoiseLayer);
-        map.removeLayer(trainNightNoiseLayer);
-    }
-});
-
-// Eventlistener für den Schieberegler Tag/Nacht (Zuglärm)
-$('#trainDayNightToggle').change(() => {
-    if ($('#trainDayNightToggle').is(':checked')) {
-        // Nachtmodus aktivieren
-        map.removeLayer(trainDayNoiseLayer);
-        map.addLayer(trainNightNoiseLayer);
-        trainDayNightLabel.textContent = 'Nacht'; // Ändere den Text auf "Nacht"
-    } else {
-        // Tagmodus aktivieren
-        map.removeLayer(trainNightNoiseLayer);
-        map.addLayer(trainDayNoiseLayer);
-        trainDayNightLabel.textContent = 'Tag'; // Ändere den Text auf "Tag"
-    }
-});
-
-// Eventlistener für die Zuglärm-Checkbox
-$('#filterTrainNoise').change(() => {
-    if (map.hasLayer(trainDayNoiseLayer) || map.hasLayer(trainNightNoiseLayer)) {
-        // Wenn einer der Zuglärm-Layer bereits vorhanden ist, entferne sie
-        map.removeLayer(trainDayNoiseLayer);
-        map.removeLayer(trainNightNoiseLayer);
-        trainDayNightToggle.style.display = 'none'; // Schieberegler verstecken
-    } else {
-        // Schieberegler anzeigen
-        trainDayNightToggle.style.display = 'block';
+        // Checkbox ist aktiviert, Schieberegler anzeigen
+        trainDayNightToggle.classList.add('show-toggle'); // Schieberegler anzeigen
 
         // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
         if ($('#trainDayNightToggle').is(':checked')) {
@@ -281,6 +216,28 @@ $('#filterTrainNoise').change(() => {
             map.addLayer(trainDayNoiseLayer);
             trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
         }
+    } else {
+        // Checkbox ist deaktiviert, Schieberegler verstecken und Layer entfernen
+        trainDayNightToggle.classList.remove('show-toggle'); // Schieberegler verstecken
+        map.removeLayer(trainDayNoiseLayer);
+        map.removeLayer(trainNightNoiseLayer);
+    }
+});
+
+// Eventlistener für den Tag/Nacht-Schieberegler (Zuglärm)
+$('#trainDayNightToggle').change(function() {
+    var trainDayNightLabel = document.getElementById('trainDayNightLabel'); // Label für Tag/Nacht (Zuglärm)
+
+    if (this.checked) {
+        // Nachtmodus aktivieren
+        map.removeLayer(trainDayNoiseLayer);
+        map.addLayer(trainNightNoiseLayer);
+        trainDayNightLabel.textContent = 'Nacht'; // Ändere den Text auf "Nacht"
+    } else {
+        // Tagmodus aktivieren
+        map.removeLayer(trainNightNoiseLayer);
+        map.addLayer(trainDayNoiseLayer);
+        trainDayNightLabel.textContent = 'Tag'; // Ändere den Text auf "Tag"
     }
 });
 /************************************************************************************************** */
@@ -387,28 +344,6 @@ $('#filterSchools').change(() => {
     }
 });
 
-// Eventlistener für die Zuglärm-Checkbox
-$('#filterTrainNoise').change(() => {
-    if (map.hasLayer(trainDayNoiseLayer) || map.hasLayer(trainNightNoiseLayer)) {
-        // Wenn einer der Zuglärm-Layer bereits vorhanden ist, entferne sie
-        map.removeLayer(trainDayNoiseLayer);
-        map.removeLayer(trainNightNoiseLayer);
-        trainDayNightToggle.style.display = 'none'; // Schieberegler verstecken
-    } else {
-        // Schieberegler anzeigen
-        trainDayNightToggle.style.display = 'block';
-
-        // Wenn der Schieberegler auf "Nacht" steht, den Nacht-Layer hinzufügen
-        if ($('#trainDayNightToggle').is(':checked')) {
-            map.addLayer(trainNightNoiseLayer);
-            trainDayNightLabel.textContent = 'Nacht'; // Zeige "Nacht" an
-        } else {
-            // Ansonsten den Tag-Layer hinzufügen
-            map.addLayer(trainDayNoiseLayer);
-            trainDayNightLabel.textContent = 'Tag'; // Zeige "Tag" an
-        }
-    }
-});
 
 // Eventlistener für die Kirchen-Checkbox
 $('#filterChurches').change(() => {

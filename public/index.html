@@ -81,45 +81,46 @@
                         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Filter</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
-                    <div class="day-night-toggle">
-                        <label class="switch">
-                            <!-- Schieberegler -->
-                            <input type="checkbox" id="dayNightToggle">
-                            <span class="slider"></span>
-                        </label>
-                    
-                        <!-- Text für Tag/Nacht unter dem Schieberegler -->
-                        <span id="dayNightLabel" class="toggle-label">Tag</span>
-                    </div>
 
-                    <!-- Schieberegler für Tag/Nacht bei Zuglärm -->
-                    <div class="train-day-night-toggle">
-                        <label class="switch">
-                            <!-- Schieberegler -->
-                            <input type="checkbox" id="trainDayNightToggle">
-                            <span class="slider"></span>
-                        </label>
-                        <!-- Text für Tag/Nacht -->
-                        <span id="trainDayNightLabel" class="toggle-label">Tag</span>
-                    </div>
 
                     <!-- Offcanvas-Körper mit Filteroptionen (Checkboxen) -->
                     <div class="offcanvas-body">
                         <form id="filterForm">
-                            <!-- Checkbox für Straßenlärm -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="noise" id="filterNoise">
-                                <label class="form-check-label" for="filterNoise">
-                                    <img src="./images/Traffic.png" alt="Traffic" width="20"> Strassenverkehrslärm
-                                </label>
+                            <!-- Checkbox für Straßenlärm und Schieberegler nebeneinander -->
+                            <div class="form-check d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox" value="noise" id="filterNoise">
+                                    <label class="form-check-label" for="filterNoise">
+                                        <img src="./images/Traffic.png" alt="Traffic" width="20"> Straßenverkehrslärm
+                                    </label>
+                                </div>
+                                <div  class="day-night-toggle "> <!-- Hier nur der Schieberegler -->
+                                    <label class="switch">
+                                        <input type="checkbox" id="dayNightToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span id="dayNightLabel" class="toggle-label ">Tag</span>
+                                </div>
                             </div>
-                             <!-- Checkbox für Zuglärm -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="train_noise" id="filterTrainNoise">
-                                <label class="form-check-label" for="filterTrainNoise">
-                                    <img src="./images/train-icon.png" alt="Train Noise" width="20"> Eisenbahnlärm
-                                </label>
+
+                            <!-- Checkbox für Zuglärm und Schieberegler nebeneinander -->
+                            <div class="form-check d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <input class="form-check-input" type="checkbox" value="train_noise" id="filterTrainNoise">
+                                    <label class="form-check-label" for="filterTrainNoise">
+                                        <img src="./images/train-icon.png" alt="Train Noise" width="20"> Eisenbahnlärm
+                                    </label>
+                                </div>
+                                <div  class="train-day-night-toggle"> <!-- Hier nur der Schieberegler -->
+                                    <label class="switch">
+                                        <input type="checkbox" id="trainDayNightToggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span id="trainDayNightLabel" class="toggle-label">Tag</span>
+                                </div>
                             </div>
+                                                    
+
 
                             <!-- Checkbox für Spitäler -->
                             <div class="form-check">
