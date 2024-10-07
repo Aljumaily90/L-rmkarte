@@ -301,26 +301,32 @@ const iconOptions = (url) => ({
 // Definieren von Icon und Cluster-Gruppen
 const icons = {
     hospital: L.icon(iconOptions('/images/hospital-icon.png')),
-    playground: L.icon(iconOptions('/images/playground-icon.png')),
-    school: L.icon(iconOptions('/images/school-icon.png')),
     church: L.icon(iconOptions('/images/church-icon.png')),
-    construction: L.icon(iconOptions('/images/construction-icon.png'))
+    construction: L.icon(iconOptions('/images/construction-icon.png')),
+    militaryAirport: L.icon(iconOptions('/images/military-icon.png')), // Neues Icon für Militärflugplätze
+    airport: L.icon(iconOptions('/images/airport-icon.png')) // Neues Icon für Flughäfen
+
+
 };
 
 const clusterGroups = {
     hospital: L.markerClusterGroup(),
-    playground: L.markerClusterGroup(),
-    school: L.markerClusterGroup(),
     church: L.markerClusterGroup(),
-    construction: L.markerClusterGroup()
+    construction: L.markerClusterGroup(),
+    militaryAirport: L.markerClusterGroup(), // Neue Clustergruppe für Militärflugplätze
+    airport: L.markerClusterGroup() // Neue Clustergruppe für Flughäfen
+
+
 };
 
 // Kontrollvariablen als Objekte für die Datenladung
 let hospitalsLoaded = { loaded: false };
-let playgroundsLoaded = { loaded: false };
-let schoolsLoaded = { loaded: false };
 let churchesLoaded = { loaded: false };
 let constructionsLoaded = { loaded: false };
+let militaryAirportsLoaded = { loaded: false }; // Neue Kontrollvariable für Militärflugplätze
+let airportsLoaded = { loaded: false }; // Neue Kontrollvariable für Flughäfen
+
+
 
 
 
@@ -334,16 +340,23 @@ $('#filterHospitals').change(() => {
 });
 
 
-
-// Eventlistener für die Schul-Checkbox
-$('#filterSchools').change(() => {
-    if ($('#filterSchools').is(':checked')) {
-        loadMarkers('/api/schools', icons.school, clusterGroups.school, schoolsLoaded);
+// Eventlistener für die Militärflugplätze-Checkbox
+$('#filterMilitaryAirports').change(() => {
+    if ($('#filterMilitaryAirports').is(':checked')) {
+        loadMarkers('/api/military_airports', icons.militaryAirport, clusterGroups.militaryAirport, militaryAirportsLoaded);
     } else {
-        map.removeLayer(clusterGroups.school);
+        map.removeLayer(clusterGroups.militaryAirport);
     }
 });
 
+// Eventlistener für die Flughäfen-Checkbox
+$('#filterAirports').change(() => {
+    if ($('#filterAirports').is(':checked')) {
+        loadMarkers('/api/airports', icons.airport, clusterGroups.airport, airportsLoaded);
+    } else {
+        map.removeLayer(clusterGroups.airport);
+    }
+});
 
 // Eventlistener für die Kirchen-Checkbox
 $('#filterChurches').change(() => {

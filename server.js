@@ -99,24 +99,26 @@ app.get('/api/spitaldaten', cacheMiddleware, (req, res) => {
     }
 });
 
-// API-Endpunkt für Spielplätze
-app.get('/api/playgrounds', cacheMiddleware, (req, res) => {
-    const playgroundsDaten = loadJSON('./public/api/playgrounds.json');
-    if (playgroundsDaten) {
-        res.json(playgroundsDaten);
+// API-Endpunkt für Militärflugplätze
+app.get('/api/military_airports', cacheMiddleware, (req, res) => {
+    const militaryAirportsDaten = loadJSON('./public/api/military_airports.json');
+    if (militaryAirportsDaten) {
+        res.json(militaryAirportsDaten);
     } else {
-        res.status(500).json({ error: 'Fehler beim Laden der Spielplatzdaten' });
+        res.status(500).json({ error: 'Fehler beim Laden der Militärflugplätze-Daten' });
     }
 });
 
-app.get('/api/schools', cacheMiddleware, (req, res) => {
-    const schoolsDaten = loadJSON('./public/api/schools.json');
-    if (schoolsDaten) {
-        res.json(schoolsDaten);
+// API-Endpunkt für Flughäfen
+app.get('/api/airports', cacheMiddleware, (req, res) => {
+    const airportsDaten = loadJSON('./public/api/airports.json');
+    if (airportsDaten) {
+        res.json(airportsDaten);
     } else {
-        res.status(500).json({ error: 'Fehler beim Laden der Schuldaten' });
+        res.status(500).json({ error: 'Fehler beim Laden der Flughäfen-Daten' });
     }
 });
+
 
 app.get('/api/churches', cacheMiddleware, (req, res) => {
     const churchesDaten = loadJSON('/public/api/churches.json');
