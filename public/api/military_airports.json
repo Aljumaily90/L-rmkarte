@@ -1,4 +1,8 @@
 [
-    { "id": 1, "name": "fghfghfghg", "lat": 47.3765, "lon": 5.4978 },
-    { "id": 2, "name": "dfgdfgsgf", "lat": 46.9481, "lon": 7.4474 }
+    { "id": 1, "name": "Militärflugplatz Payerne", "lat": 46.8427, "lon": 6.9136 },
+    { "id": 2, "name": "Militärflugplatz Meiringen", "lat": 46.7431, "lon": 8.1126 },
+    { "id": 3, "name": "Militärflugplatz Emmen", "lat": 47.0924, "lon": 8.3050 },
+    { "id": 4, "name": "Militärflugplatz Alpnach", "lat": 46.9474, "lon": 8.2777 },
+    { "id": 5, "name": "Militärflugplatz Locarno", "lat": 46.1605, "lon": 8.8789 },
+    { "id": 6, "name": "Militärflugplatz Dübendorf", "lat": 47.3994, "lon": 8.6491 }
 ]

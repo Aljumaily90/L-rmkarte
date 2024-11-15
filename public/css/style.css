@@ -372,5 +372,14 @@ input:checked + .slider:before {
     box-sizing: border-box; /* Sorgt dafür, dass der Rahmen in die Größe des Icons passt */
 }
 
-
+/*********************** haftung************************/
+#haftung{
+    margin-top: 50px;
+    padding: 30px;
+    font-weight: 650;
+    font-size: 18px;
+    background-color: white;
+    color: black;
+    border-radius: 20px;
+}
 
