@@ -401,33 +401,71 @@ const noiseLayers = {
     militaryAirport: [],
     airport: []
 };
+// Speichert die Zuordnung zwischen Marker-IDs und ihren Noise-Circles
+const markerNoiseMapping = {};
 
-// Helper-Funktion: Lärmradius mit simuliertem Farbverlauf erstellen
-const createNoiseCircle = (lat, lon) => {
-    const steps = [
-        { radius: 100, color: 'darkred', opacity: 0.7 },  // Innerster Kreis
-        { radius: 200, color: 'red', opacity: 0.6 },      // Zweiter Kreis
-        { radius: 250, color: 'orange', opacity: 0.5 },   // Dritter Kreis
-        { radius: 300, color: 'gold', opacity: 0.4 },     // Vierter Kreis
-        { radius: 500, color: 'yellow', opacity: 0.3 }   // Äußerster Kreis
-    ];
+// Helper-Funktion: Lärmradius mit simuliertem Farbverlauf erstellenconst createNoiseCircle 
+const createNoiseCircle = (id, lat, lon, category) => {
+    let steps;
 
-    // Erstelle Kreise für den Farbverlauf
+    // Individuelle Radien und Farben für Kategorien
+    if (category === 'hospital') {
+        steps = [
+            { radius: 150, color: 'darkred', opacity: 0.7 },
+            { radius: 300, color: 'red', opacity: 0.6 },
+            { radius: 400, color: 'orange', opacity: 0.5 }
+        ];
+    } else if (category === 'church') {
+        steps = [
+            { radius: 100, color: 'blue', opacity: 0.7 },
+            { radius: 200, color: 'lightblue', opacity: 0.6 },
+            { radius: 300, color: 'skyblue', opacity: 0.5 }
+        ];
+    } else if (category === 'construction') {
+        steps = [
+            { radius: 50, color: 'brown', opacity: 0.6 },
+            { radius: 100, color: 'sienna', opacity: 0.5 },
+            { radius: 150, color: 'goldenrod', opacity: 0.4 }
+        ];
+    } else if (category === 'militaryAirport') {
+        steps = [
+            { radius: 300, color: 'green', opacity: 0.6 },
+            { radius: 500, color: 'lime', opacity: 0.5 },
+            { radius: 700, color: 'lightgreen', opacity: 0.4 }
+        ];
+    } else if (category === 'airport') {
+        steps = [
+            { radius: 500, color: 'purple', opacity: 0.7 },
+            { radius: 800, color: 'violet', opacity: 0.6 },
+            { radius: 1000, color: 'lavender', opacity: 0.5 }
+        ];
+    } else {
+        // Standardradien für andere Kategorien
+        steps = [
+            { radius: 100, color: 'darkred', opacity: 0.7 },
+            { radius: 200, color: 'red', opacity: 0.6 },
+            { radius: 300, color: 'orange', opacity: 0.5 }
+        ];
+    }
+
+    // Erstelle Noise-Circles basierend auf den definierten Schritten
     const circles = steps.map(step =>
         L.circle([lat, lon], {
-            radius: step.radius,
-            color: step.color,
-            fillColor: step.color,
-            fillOpacity: step.opacity,
-            weight: 0 // Kein Rand
+            radius: step.radius,     // Radius in Metern
+            color: step.color,       // Farbe der Kontur
+            fillColor: step.color,   // Füllfarbe
+            fillOpacity: step.opacity, // Transparenz
+            weight: 0                // Kein Rand
         })
     );
 
-    // Füge die Kreise der Karte hinzu
+    // Noise-Circles speichern
+    markerNoiseMapping[id] = { category, circles };
     circles.forEach(circle => circle.addTo(map));
-
-    return circles; // Rückgabe der Kreise, um sie später entfernen zu können
 };
+
+    
+   
 
 /************************************ Eventlistener *********************************************** */
 
@@ -440,18 +478,19 @@ $('#filterHospitals').change(() => {
         // Füge Lärmradius mit Farbverlauf hinzu
         fetchData('/api/spitaldaten', (data) => {
             data.forEach(item => {
-                const circles = createNoiseCircle(item.lat, item.lon);
-                noiseLayers.hospital.push(...circles); // Alle Kreise speichern
+                createNoiseCircle(`hospital-${item.id}`, item.lat, item.lon, 'hospital'); // ID und Kategorie übergeben
             });
         });
     } else {
         // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.hospital);
-        noiseLayers.hospital.forEach(circle => map.removeLayer(circle));
-        noiseLayers.hospital = [];
+        Object.keys(markerNoiseMapping).forEach(id => {
+            if (markerNoiseMapping[id].category === 'hospital') {
+                removeNoiseCircle(id);
+            }
+        });
     }
 });
-
 
 // Eventlistener für die Kirchen-Checkbox
 $('#filterChurches').change(() => {
@@ -461,15 +500,17 @@ $('#filterChurches').change(() => {
         // Füge Lärmradius mit Farbverlauf hinzu
         fetchData('/api/churches', (data) => {
             data.forEach(item => {
-                const circles = createNoiseCircle(item.lat, item.lon);
-                noiseLayers.church.push(...circles); // Alle Kreise speichern
+                createNoiseCircle(`church-${item.id}`, item.lat, item.lon, 'church'); // ID und Kategorie übergeben
             });
         });
     } else {
         // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.church);
-        noiseLayers.church.forEach(circle => map.removeLayer(circle));
-        noiseLayers.church = [];
+        Object.keys(markerNoiseMapping).forEach(id => {
+            if (markerNoiseMapping[id].category === 'church') {
+                removeNoiseCircle(id);
+            }
+        });
     }
 });
 
@@ -481,15 +522,17 @@ $('#filterConstruction').change(() => {
 
             // Füge Lärmradius mit Farbverlauf hinzu
             data.forEach(item => {
-                const circles = createNoiseCircle(item.lat, item.lon);
-                noiseLayers.construction.push(...circles); // Alle Kreise speichern
+                createNoiseCircle(`construction-${item.id}`, item.lat, item.lon, 'construction'); // ID und Kategorie übergeben
             });
         });
     } else {
         // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.construction);
-        noiseLayers.construction.forEach(circle => map.removeLayer(circle));
-        noiseLayers.construction = [];
+        Object.keys(markerNoiseMapping).forEach(id => {
+            if (markerNoiseMapping[id].category === 'construction') {
+                removeNoiseCircle(id);
+            }
+        });
     }
 });
 
@@ -501,15 +544,17 @@ $('#filterMilitaryAirports').change(() => {
         // Füge Lärmradius mit Farbverlauf hinzu
         fetchData('/api/military_airports', (data) => {
             data.forEach(item => {
-                const circles = createNoiseCircle(item.lat, item.lon);
-                noiseLayers.militaryAirport.push(...circles); // Alle Kreise speichern
+                createNoiseCircle(`militaryAirport-${item.id}`, item.lat, item.lon, 'militaryAirport'); // ID und Kategorie übergeben
             });
         });
     } else {
         // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.militaryAirport);
-        noiseLayers.militaryAirport.forEach(circle => map.removeLayer(circle));
-        noiseLayers.militaryAirport = [];
+        Object.keys(markerNoiseMapping).forEach(id => {
+            if (markerNoiseMapping[id].category === 'militaryAirport') {
+                removeNoiseCircle(id);
+            }
+        });
     }
 });
 
@@ -521,15 +566,17 @@ $('#filterAirports').change(() => {
         // Füge Lärmradius mit Farbverlauf hinzu
         fetchData('/api/airports', (data) => {
             data.forEach(item => {
-                const circles = createNoiseCircle(item.lat, item.lon);
-                noiseLayers.airport.push(...circles); // Alle Kreise speichern
+                createNoiseCircle(`airport-${item.id}`, item.lat, item.lon, 'airport'); // ID und Kategorie übergeben
             });
         });
     } else {
         // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.airport);
-        noiseLayers.airport.forEach(circle => map.removeLayer(circle));
-        noiseLayers.airport = [];
+        Object.keys(markerNoiseMapping).forEach(id => {
+            if (markerNoiseMapping[id].category === 'airport') {
+                removeNoiseCircle(id);
+            }
+        });
     }
 });
 
