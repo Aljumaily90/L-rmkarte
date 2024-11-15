@@ -10,7 +10,7 @@
 }
 /* Filter */
 #offcanvasDarkNavbar {
-    width: 350px; /* Standardbreite */
+    width: 450px; /* Standardbreite */
 }
 /* Standard-Hintergrundfarbe für alle Dropdown-Optionen */
 .dropdown-item {
@@ -80,7 +80,7 @@
 
 /* Standort-Button-Stile */
 #locationButton {
-    background-color: #007bff; /* Hintergrundfarbe des Buttons */
+    background-color: #7a7e81; /* Hintergrundfarbe des Buttons */
     border: none; /* Rahmen entfernen */
     padding: 6px; /* Innenabstand des Buttons */
     cursor: pointer; /* Cursor als Hand anzeigen */
@@ -99,7 +99,7 @@
 
 /* Hover-Effekt für Standort-Button */
 #locationButton:hover {
-    background-color: #a2f1c0; /* Dunklere Hintergrundfarbe beim Hover */
+    background-color: #528a8b; /* Dunklere Hintergrundfarbe beim Hover */
 }
 
 /* Suchbutton */
@@ -318,3 +318,58 @@ input:checked + .slider:before {
 /************************************
  *  ****** ****** ****** ******* ****
  ************************************/
+/* Styling für das Info-Fenster */
+.info-popup {
+    display: block;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 200px;
+    color: black;
+    font-size: 14px;
+    border-radius: 8px;
+    position: relative; /* Damit der "X"-Button relativ zum Popup positioniert wird */
+}
+
+/* Styling für den Schließen-Button (das "X") */
+.close-popup {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+}
+
+/* Styling für den Inhalt des Popups */
+.info-content {
+    padding-top: 20px; /* Abstand nach oben, um Platz für den "X"-Button zu schaffen */
+    font-size: 14px;
+}
+/***********************************************/
+/* Entfernt den Hintergrund des Buttons und lässt nur das Icon sichtbar */
+.info-btn {
+    background-color: transparent; /* Macht den Hintergrund des Buttons transparent */
+    border: none; /* Entfernt den Rahmen um den Button */
+    padding: 0; /* Entfernt die Standard-Padding des Buttons */
+    cursor: pointer; /* Zeigt den Zeiger an, wenn der Benutzer über den Button fährt */
+}
+
+.info-btn img {
+    display: block;
+    width: 20px; /* Größe des Icons anpassen */
+    height: 20px; /* Größe des Icons anpassen */
+}
+/*********************** ICOns************************/
+.custom-icon {
+    border: 2px solid red; /* Roter Rahmen */
+
+    box-sizing: border-box; /* Sorgt dafür, dass der Rahmen in die Größe des Icons passt */
+}
+
+

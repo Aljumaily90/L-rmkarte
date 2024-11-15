@@ -1,4 +1,3 @@
-/************************************************************************************ */
 /******************************************** Main**************************************** */
 // Initialisiere die Variable 'marker' global, damit sie in allen Funktionen verwendet werden kann
 var marker;
@@ -14,6 +13,7 @@ var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
     subdomains: '123',
+    noWrap: true, // Verhindert das Wiederholen der Karte
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
 // Swisstopo Satellitenansicht
@@ -111,16 +111,16 @@ var dayNightToggle = document.querySelector('.day-night-toggle'); // Der Schiebe
 var noiseCheckbox = document.getElementById('filterNoise'); // Die Checkbox für Straßenlärm
 
 var dayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
-    minZoom: 12,
-    maxZoom: 19,
+    minZoom: 9,
+    maxZoom: 20,
     subdomains: '1234',
     opacity: 0.7,
     attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
 });
 
 var nightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-strassenlaerm_nacht/default/current/3857/{z}/{x}/{y}.png', {
-    minZoom: 12,
-    maxZoom: 19,
+    minZoom: 9,
+    maxZoom: 20,
     subdomains: '1234',
     opacity: 0.7,
     attribution: '&copy; <a href="https://www.bafu.admin.ch/bafu/de/home/themen/laerm.html">BAFU</a>'
@@ -180,7 +180,7 @@ var trainDayNightLabel = document.getElementById('trainDayNightLabel'); // Label
 
 // Definiere die Layer für Zuglärm Tag/Nacht
 var trainDayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-bahnlaerm_tag/default/current/3857/{z}/{x}/{y}.png', {
-    minZoom: 12,
+    minZoom: 8,
     maxZoom: 19,
     subdomains: '1234',
     opacity: 0.7,
@@ -188,7 +188,7 @@ var trainDayNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu
 });
 
 var trainNightNoiseLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.bafu.laerm-bahnlaerm_nacht/default/current/3857/{z}/{x}/{y}.png', {
-    minZoom: 12,
+    minZoom: 8,
     maxZoom: 19,
     subdomains: '1234',
     opacity: 0.7,
@@ -266,12 +266,39 @@ const fetchData = (url, callback) => {
     $.getJSON(url, callback).fail(() => console.error(`Fehler beim Laden von ${url}`));
 };
 
-// Helper-Funktion zum Hinzufügen von Markern zur Karte
-const addMarkersToMap = (data, icon, clusterGroup) => {
+// Helper-Funktion zum Berechnen der verbleibenden Tage bis zum Enddatum
+const calculateDaysRemaining = (endDate) => {
+    const currentDate = new Date();
+    const end = new Date(endDate);
+    const timeDiff = end - currentDate;
+    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return daysRemaining >= 0 ? daysRemaining : 0;
+};
+
+// Helper-Funktion zum Überprüfen, ob die Baustelle abgelaufen ist
+const isConstructionExpired = (endDate) => {
+    const currentDate = new Date();
+    const end = new Date(endDate);
+    return currentDate > end;
+};
+
+// Helper-Funktion zum Hinzufügen von Markern zur Karte mit Countdown
+const addConstructionMarkersToMap = (data, icon, clusterGroup) => {
     clusterGroup.clearLayers();
     data.forEach(item => {
+        // Überspringen, wenn die Baustelle abgelaufen ist
+        if (isConstructionExpired(item.endDate)) return;
+
+        const daysRemaining = calculateDaysRemaining(item.endDate);
+
+        const popupContent = `
+            <b>${item.name}</b><br>
+            Enddatum: ${item.endDate}<br>
+            ${daysRemaining} Tage bis zum Ende
+        `;
+
         const marker = L.marker([item.lat, item.lon], { icon })
-            .bindPopup(`<b>${item.name}</b>`);
+            .bindPopup(popupContent);
         clusterGroup.addLayer(marker);
     });
     map.addLayer(clusterGroup);
@@ -288,6 +315,17 @@ const loadMarkers = (url, icon, clusterGroup, flagObj) => {
         map.addLayer(clusterGroup); // Wenn die Daten bereits geladen sind, füge die Gruppe direkt hinzu
     }
 };
+
+const addMarkersToMap = (data, icon, clusterGroup) => {
+    clusterGroup.clearLayers();
+    data.forEach(item => {
+        const marker = L.marker([item.lat, item.lon], { icon })
+            .bindPopup(`<b>${item.name}</b>`);
+        clusterGroup.addLayer(marker);
+    });
+    map.addLayer(clusterGroup);
+};
+
 /************************************************************************************************** */
 /************************************Icon / Checkbox*********************************************** */
 // Icon-Einstellungen-Einstellungen
@@ -295,7 +333,8 @@ const iconOptions = (url) => ({
     iconUrl: url,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
-    popupAnchor: [0, -32]
+    popupAnchor: [0, -32],
+    className: 'custom-icon' // Füge eine benutzerdefinierte Klasse hinzu
 });
 
 // Definieren von Icon und Cluster-Gruppen
@@ -370,7 +409,10 @@ $('#filterChurches').change(() => {
 // Eventlistener für die Baustellen-Checkbox
 $('#filterConstruction').change(() => {
     if ($('#filterConstruction').is(':checked')) {
-        loadMarkers('/api/construction', icons.construction, clusterGroups.construction, constructionsLoaded);
+        // Spezifische Funktion für Baustellen verwenden, um den Countdown anzuzeigen
+        fetchData('/api/construction', (data) => {
+            addConstructionMarkersToMap(data, icons.construction, clusterGroups.construction);
+        });
     } else {
         map.removeLayer(clusterGroups.construction);
     }
@@ -476,16 +518,29 @@ function getLocation() {
     }
 }
 
+// Funktion zur Anzeige der aktuellen Position oder zum Entfernen des Markers
+function toggleLocation() {
+    if (marker && map.hasLayer(marker)) {
+        // Wenn der Marker vorhanden ist und auf der Karte liegt, entferne ihn
+        map.removeLayer(marker);
+        marker = null; // Setze die Marker-Variable auf null
+    } else {
+        // Ansonsten Standort abrufen und anzeigen
+        getLocation();
+    }
+}
+
 
 // Funktion zur Anzeige der aktuellen Position auf der Karte
 function showPosition(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
 
-    // Entferne vorherige Standortmarker, falls vorhanden
-    if (marker) {
-        map.removeLayer(marker);
-    }
+        // Entferne vorherige Standortmarker, falls vorhanden
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
 
     // Füge einen neuen Marker an der aktuellen Position hinzu
     marker = L.marker([lat, lon]).addTo(map)
@@ -515,6 +570,59 @@ function showError(error) {
 }
 
 // Event-Listener für den Standort-Button
-document.getElementById('locationButton').addEventListener('click', function() {
-    getLocation(); // Starte die Standortabfrage
+document.getElementById('locationButton').addEventListener('click', toggleLocation);
+
+
+/************************************************************************************************** */
+/***************************************Info-Buttom*********************************************************** */
+// Event-Listener für die Info-Buttons
+document.querySelectorAll('.info-btn').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault(); // Verhindere das Standard-Button-Verhalten
+
+        // Überprüfen, ob das Popup bereits existiert und entfernt werden soll
+        let existingPopup = document.querySelector('.info-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+            return; // Popup entfernt, also hier aufhören
+        }
+
+        // Erstelle ein neues Info-Fenster
+        const infoText = this.getAttribute('data-info');
+        let popup = document.createElement('div');
+        popup.classList.add('info-popup');
+
+        // Füge den Info-Text und den Schließen-Button hinzu
+        popup.innerHTML = `
+            <button class="close-popup">&times;</button>
+            <div class="info-content b-1">
+                <p>${infoText}</p>
+            </div>
+        `;
+
+        // Füge das Info-Fenster dem Offcanvas-Body hinzu
+        const offcanvasBody = document.querySelector('.offcanvas-body'); // Offcanvas-Container
+        offcanvasBody.appendChild(popup);
+
+        // Positioniere das Info-Fenster direkt neben dem Button innerhalb des Offcanvas-Containers
+        const buttonRect = this.getBoundingClientRect(); // Position des Buttons
+        const containerRect = offcanvasBody.getBoundingClientRect(); // Begrenze das Popup auf den Offcanvas-Body
+
+        // Berechne die exakte Position relativ zum Button
+        popup.style.position = 'absolute';
+        popup.style.top = `${buttonRect.top - containerRect.top}px`;  // Exakte Höhe wie der Button
+        popup.style.left = `${buttonRect.right - containerRect.left + 10}px`;  // Rechts vom Button mit einem Abstand von 10px
+
+        // Event-Listener für den Schließen-Button (das "X")
+        document.querySelector('.close-popup').addEventListener('click', function() {
+            popup.remove(); // Entferne das Popup, wenn auf "X" geklickt wird
+        });
+
+        // Schließe das Fenster bei einem Klick außerhalb des Popups
+        document.addEventListener('click', function(event) {
+            if (!popup.contains(event.target) && !button.contains(event.target)) {
+                popup.remove();
+            }
+        }, { once: true });
+    });
 });

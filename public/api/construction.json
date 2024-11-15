@@ -1,5 +1,6 @@
 [
-    { "id": 1, "name": "Universitätsspital Zürich", "lat": 47.3765, "lon": 5.4978 },
-    { "id": 2, "name": "Inselspital Bern", "lat": 46.9481, "lon": 7.4474 }
-    
+    { "id": 2, "name": "dfgdfgsgf", "lat": 46.9481, "lon": 7.4474, "endDate": "2024-12-31" },
+    { "id": 3, "name": "Baustelle 2", "lat": 47.3769, "lon": 8.5417, "endDate": "2024-11-30" }
 ]
+
+

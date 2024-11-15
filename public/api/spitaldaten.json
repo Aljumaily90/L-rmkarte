@@ -1,4 +1,8 @@
 [
-    { "id": 1, "name": "Universitätsspital Zürich", "lat": 47.3765, "lon": 5.4978 },
-    { "id": 2, "name": "Inselspital Bern", "lat": 46.9481, "lon": 7.4474 }
+    { "id": 1, "name": "Luzerner kantonsspital", "lat": 47.059242, "lon": 8.297553 },
+    { "id": 1, "name": "Zuger Kantonsspital", "lat": 47.194083, "lon": 8.517874 },
+    { "id": 1, "name": "Spital Nidwalden", "lat": 46.963694, "lon": 8.367040 },
+    { "id": 1, "name": "Kantonsspital Obwalden", "lat": 46.894510, "lon": 8.250430 }
 ]
+
+
