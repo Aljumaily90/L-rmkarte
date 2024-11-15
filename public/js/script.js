@@ -388,7 +388,39 @@ let constructionsLoaded = { loaded: false };
 let militaryAirportsLoaded = { loaded: false }; // Neue Kontrollvariable für Militärflugplätze
 let airportsLoaded = { loaded: false }; // Neue Kontrollvariable für Flughäfen
 
+// Noise-Layers für alle Kategorien initialisieren
+const noiseLayers = {
+    hospital: [],
+    church: [],
+    construction: [],
+    militaryAirport: [],
+    airport: []
+};
 
+// Helper-Funktion: Lärmradius mit simuliertem Farbverlauf erstellen
+const createNoiseCircle = (lat, lon) => {
+    const steps = [
+        { radius: 300, color: 'darkred', opacity: 0.6 }, // Innerster Kreis
+        { radius: 600, color: 'orange', opacity: 0.4 }, // Mittlerer Kreis
+        { radius: 1000, color: 'yellow', opacity: 0.2 } // Äußerster Kreis
+    ];
+
+    // Erstelle Kreise für den Farbverlauf
+    const circles = steps.map(step =>
+        L.circle([lat, lon], {
+            radius: step.radius,
+            color: step.color,
+            fillColor: step.color,
+            fillOpacity: step.opacity,
+            weight: 0 // Kein Rand
+        })
+    );
+
+    // Füge die Kreise der Karte hinzu
+    circles.forEach(circle => circle.addTo(map));
+
+    return circles; // Rückgabe der Kreise, um sie später entfernen zu können
+};
 
 /************************************ Eventlistener *********************************************** */
 
@@ -397,48 +429,100 @@ let airportsLoaded = { loaded: false }; // Neue Kontrollvariable für Flughäfen
 $('#filterHospitals').change(() => {
     if ($('#filterHospitals').is(':checked')) {
         loadMarkers('/api/spitaldaten', icons.hospital, clusterGroups.hospital, hospitalsLoaded);
+
+        // Füge Lärmradius mit Farbverlauf hinzu
+        fetchData('/api/spitaldaten', (data) => {
+            data.forEach(item => {
+                const circles = createNoiseCircle(item.lat, item.lon);
+                noiseLayers.hospital.push(...circles); // Alle Kreise speichern
+            });
+        });
     } else {
+        // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.hospital);
+        noiseLayers.hospital.forEach(circle => map.removeLayer(circle));
+        noiseLayers.hospital = [];
     }
 });
 
-
-// Eventlistener für die Militärflugplätze-Checkbox
-$('#filterMilitaryAirports').change(() => {
-    if ($('#filterMilitaryAirports').is(':checked')) {
-        loadMarkers('/api/military_airports', icons.militaryAirport, clusterGroups.militaryAirport, militaryAirportsLoaded);
-    } else {
-        map.removeLayer(clusterGroups.militaryAirport);
-    }
-});
-
-// Eventlistener für die Flughäfen-Checkbox
-$('#filterAirports').change(() => {
-    if ($('#filterAirports').is(':checked')) {
-        loadMarkers('/api/airports', icons.airport, clusterGroups.airport, airportsLoaded);
-    } else {
-        map.removeLayer(clusterGroups.airport);
-    }
-});
 
 // Eventlistener für die Kirchen-Checkbox
 $('#filterChurches').change(() => {
     if ($('#filterChurches').is(':checked')) {
         loadMarkers('/api/churches', icons.church, clusterGroups.church, churchesLoaded);
+
+        // Füge Lärmradius mit Farbverlauf hinzu
+        fetchData('/api/churches', (data) => {
+            data.forEach(item => {
+                const circles = createNoiseCircle(item.lat, item.lon);
+                noiseLayers.church.push(...circles); // Alle Kreise speichern
+            });
+        });
     } else {
+        // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.church);
+        noiseLayers.church.forEach(circle => map.removeLayer(circle));
+        noiseLayers.church = [];
     }
 });
 
-// Eventlistener für die Baustellen-Checkbox
+// Eventlistener für Baustellen
 $('#filterConstruction').change(() => {
     if ($('#filterConstruction').is(':checked')) {
-        // Spezifische Funktion für Baustellen verwenden, um den Countdown anzuzeigen
         fetchData('/api/construction', (data) => {
             addConstructionMarkersToMap(data, icons.construction, clusterGroups.construction);
+
+            // Füge Lärmradius mit Farbverlauf hinzu
+            data.forEach(item => {
+                const circles = createNoiseCircle(item.lat, item.lon);
+                noiseLayers.construction.push(...circles); // Alle Kreise speichern
+            });
         });
     } else {
+        // Entferne Marker und Lärmradius
         map.removeLayer(clusterGroups.construction);
+        noiseLayers.construction.forEach(circle => map.removeLayer(circle));
+        noiseLayers.construction = [];
+    }
+});
+
+// Eventlistener für Militärflugplätze
+$('#filterMilitaryAirports').change(() => {
+    if ($('#filterMilitaryAirports').is(':checked')) {
+        loadMarkers('/api/military_airports', icons.militaryAirport, clusterGroups.militaryAirport, militaryAirportsLoaded);
+
+        // Füge Lärmradius mit Farbverlauf hinzu
+        fetchData('/api/military_airports', (data) => {
+            data.forEach(item => {
+                const circles = createNoiseCircle(item.lat, item.lon);
+                noiseLayers.militaryAirport.push(...circles); // Alle Kreise speichern
+            });
+        });
+    } else {
+        // Entferne Marker und Lärmradius
+        map.removeLayer(clusterGroups.militaryAirport);
+        noiseLayers.militaryAirport.forEach(circle => map.removeLayer(circle));
+        noiseLayers.militaryAirport = [];
+    }
+});
+
+// Eventlistener für Flughäfen
+$('#filterAirports').change(() => {
+    if ($('#filterAirports').is(':checked')) {
+        loadMarkers('/api/airports', icons.airport, clusterGroups.airport, airportsLoaded);
+
+        // Füge Lärmradius mit Farbverlauf hinzu
+        fetchData('/api/airports', (data) => {
+            data.forEach(item => {
+                const circles = createNoiseCircle(item.lat, item.lon);
+                noiseLayers.airport.push(...circles); // Alle Kreise speichern
+            });
+        });
+    } else {
+        // Entferne Marker und Lärmradius
+        map.removeLayer(clusterGroups.airport);
+        noiseLayers.airport.forEach(circle => map.removeLayer(circle));
+        noiseLayers.airport = [];
     }
 });
 
