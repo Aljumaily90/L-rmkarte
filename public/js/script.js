@@ -65,6 +65,29 @@ function changeMapLayer(newLayer) {
             map.addLayer(trainDayNoiseLayer); // Füge den Tag-Zuglärm-Layer hinzu
         }
     }
+    // Überprüfe, ob die Checkbox für Spitäler aktiviert ist
+    if ($('#filterHospitals').is(':checked')) {
+        map.addLayer(clusterGroups.hospital);
+    }
+     // Überprüfe, ob die Checkbox für Kirchen aktiviert ist
+     if ($('#filterChurches').is(':checked')) {
+        map.addLayer(clusterGroups.church);
+    }
+
+    // Überprüfe, ob die Checkbox für Baustellen aktiviert ist
+    if ($('#filterConstruction').is(':checked')) {
+        map.addLayer(clusterGroups.construction);
+    }
+
+    // Überprüfe, ob die Checkbox für Militärflugplätze aktiviert ist
+    if ($('#filterMilitaryAirports').is(':checked')) {
+        map.addLayer(clusterGroups.militaryAirport);
+    }
+
+    // Überprüfe, ob die Checkbox für Flughäfen aktiviert ist
+    if ($('#filterAirports').is(':checked')) {
+        map.addLayer(clusterGroups.airport);
+    }
 }
 
 
@@ -367,6 +390,7 @@ let airportsLoaded = { loaded: false }; // Neue Kontrollvariable für Flughäfen
 
 
 
+/************************************ Eventlistener *********************************************** */
 
 
 // Eventlistener für die Spitäler-Checkbox
@@ -417,6 +441,8 @@ $('#filterConstruction').change(() => {
         map.removeLayer(clusterGroups.construction);
     }
 });
+
+
 /************************************************************************************************** */
 /***********************************************Suche*************************************************** */
 // Geocoding über den "Suche"-Button
