@@ -36,7 +36,7 @@ var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
 // Standard-Karte beim Laden hinzufügen
-map.addLayer(standardLayer);
+map.addLayer(grayscaleLayer);
 
 // Eventlistener zum Wechseln der Kartenansicht
 function changeMapLayer(newLayer) {
@@ -65,28 +65,33 @@ function changeMapLayer(newLayer) {
             map.addLayer(trainDayNoiseLayer); // Füge den Tag-Zuglärm-Layer hinzu
         }
     }
-    // Überprüfe, ob die Checkbox für Spitäler aktiviert ist
+    // Überprüfe und füge Marker und Lärmradius für Spitäler hinzu
     if ($('#filterHospitals').is(':checked')) {
-        map.addLayer(clusterGroups.hospital);
+        map.addLayer(clusterGroups.hospital); // Marker hinzufügen
+        noiseLayers.hospital.forEach(circle => circle.addTo(map)); // Lärmradius hinzufügen
     }
-     // Überprüfe, ob die Checkbox für Kirchen aktiviert ist
-     if ($('#filterChurches').is(':checked')) {
-        map.addLayer(clusterGroups.church);
+    // Überprüfe und füge Marker und Lärmradius für Kirchen hinzu
+    if ($('#filterChurches').is(':checked')) {
+        map.addLayer(clusterGroups.church); // Marker hinzufügen
+        noiseLayers.church.forEach(circle => circle.addTo(map)); // Lärmradius hinzufügen
     }
 
-    // Überprüfe, ob die Checkbox für Baustellen aktiviert ist
+    // Überprüfe und füge Marker und Lärmradius für Baustellen hinzu
     if ($('#filterConstruction').is(':checked')) {
-        map.addLayer(clusterGroups.construction);
+        map.addLayer(clusterGroups.construction); // Marker hinzufügen
+        noiseLayers.construction.forEach(circle => circle.addTo(map)); // Lärmradius hinzufügen
     }
 
-    // Überprüfe, ob die Checkbox für Militärflugplätze aktiviert ist
+    // Überprüfe und füge Marker und Lärmradius für Militärflugplätze hinzu
     if ($('#filterMilitaryAirports').is(':checked')) {
-        map.addLayer(clusterGroups.militaryAirport);
+        map.addLayer(clusterGroups.militaryAirport); // Marker hinzufügen
+        noiseLayers.militaryAirport.forEach(circle => circle.addTo(map)); // Lärmradius hinzufügen
     }
 
-    // Überprüfe, ob die Checkbox für Flughäfen aktiviert ist
+    // Überprüfe und füge Marker und Lärmradius für Flughäfen hinzu
     if ($('#filterAirports').is(':checked')) {
-        map.addLayer(clusterGroups.airport);
+        map.addLayer(clusterGroups.airport); // Marker hinzufügen
+        noiseLayers.airport.forEach(circle => circle.addTo(map)); // Lärmradius hinzufügen
     }
 }
 
@@ -400,9 +405,11 @@ const noiseLayers = {
 // Helper-Funktion: Lärmradius mit simuliertem Farbverlauf erstellen
 const createNoiseCircle = (lat, lon) => {
     const steps = [
-        { radius: 300, color: 'darkred', opacity: 0.6 }, // Innerster Kreis
-        { radius: 600, color: 'orange', opacity: 0.4 }, // Mittlerer Kreis
-        { radius: 1000, color: 'yellow', opacity: 0.2 } // Äußerster Kreis
+        { radius: 100, color: 'darkred', opacity: 0.7 },  // Innerster Kreis
+        { radius: 200, color: 'red', opacity: 0.6 },      // Zweiter Kreis
+        { radius: 250, color: 'orange', opacity: 0.5 },   // Dritter Kreis
+        { radius: 300, color: 'gold', opacity: 0.4 },     // Vierter Kreis
+        { radius: 500, color: 'yellow', opacity: 0.3 }   // Äußerster Kreis
     ];
 
     // Erstelle Kreise für den Farbverlauf
