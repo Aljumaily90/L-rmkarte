@@ -9,7 +9,7 @@ const map = L.map('map').setView([46.8182, 8.2275], 8);
 // Initialisierung der Kartenansichten
 var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', {
     minZoom: 9,
-    maxZoom: 19,
+    maxZoom: 21,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
     subdomains: '123',
@@ -18,7 +18,7 @@ var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo
 });
 // Swisstopo Satellitenansicht
 var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg', {
-    maxZoom: 19,
+    maxZoom: 21,
     minZoom: 9,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
@@ -28,7 +28,7 @@ var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
 
 // Schwarz-Weiß-Karte von Swisstopo
 var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg', {
-    maxZoom: 19,
+    maxZoom: 21,
     minZoom: 9,
     updateWhenIdle: true,
     useCache: true,
