@@ -14,6 +14,10 @@ app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
 
+// Middleware für JSON-Daten aktivieren
+app.use(express.json()); // **WICHTIG: JSON-Daten aus POST-Requests parsen**
+app.use(express.urlencoded({ extended: true })); // Optional: Formulardaten parsen
+
 // Konfiguration der Content Security Policy (CSP)
 app.use(helmet.contentSecurityPolicy({
     directives: {
@@ -87,11 +91,21 @@ const loadJSON = (filePath) => {
     }
 };
 
+// Funktion zum Speichern von JSON-Daten
+const saveJSON = (filePath, data) => {
+    try {
+        fs.writeFileSync(path.join(__dirname, filePath), JSON.stringify(data, null, 2), 'utf8');
+    } catch (error) {
+        console.error(`Fehler beim Speichern der Datei ${filePath}:`, error);
+        throw error;
+    }
+};
+
 // API-Endpunkte mit Daten aus JSON-Dateien
 
 /// API-Endpunkt für Spitaldaten
-app.get('/api/spitaldaten', cacheMiddleware, (req, res) => {
-    const spitalDaten = loadJSON('./public/api/spitaldaten.json');
+app.get('/api/hospitals', cacheMiddleware, (req, res) => {
+    const spitalDaten = loadJSON('./public/api/hospitals.json');
     if (spitalDaten) {
         res.json(spitalDaten);
     } else {
@@ -137,6 +151,61 @@ app.get('/api/construction', cacheMiddleware, (req, res) => {
         res.status(500).json({ error: 'Fehler beim Laden der Baustellendaten' });
     }
 });
+
+app.post('/api/save-data', (req, res) => {
+    const { coordinates, category, name = 'Neues Objekt', endDate } = req.body;
+
+    // Prüfung: Sind die erforderlichen Felder vorhanden?
+    if (!coordinates || !category) {
+        return res.status(400).json({
+            error: 'Ungültige Anfrage. Koordinaten und Kategorie sind erforderlich.'
+        });
+    }
+
+    // Datei basierend auf der Kategorie auswählen
+    const filePath = `./public/api/${category}.json`;
+
+    try {
+        // Bestehende Daten laden oder leeres Array erstellen
+        const existingData = loadJSON(filePath) || [];
+
+        // Automatische ID-Berechnung (höchste ID + 1 oder ID = 1, falls leer)
+        const newId = existingData.length > 0
+            ? Math.max(...existingData.map(item => item.id)) + 1
+            : 1;
+
+        // Neuen Eintrag erstellen
+        const newEntry = {
+            id: newId,
+            name: name, // Falls kein Name angegeben ist, wird 'Neues Objekt' verwendet
+            lat: coordinates[0],
+            lon: coordinates[1]
+        };
+
+        // Falls Kategorie 'construction', füge `endDate` hinzu
+        if (category === 'construction' && endDate) {
+            newEntry.end_date = endDate;
+        }
+
+        // Neuen Eintrag hinzufügen und speichern
+        existingData.push(newEntry);
+        saveJSON(filePath, existingData);
+
+        // Erfolgsmeldung zurücksenden
+        res.json({
+            success: true,
+            message: 'Daten erfolgreich gespeichert!',
+            data: newEntry
+        });
+    } catch (error) {
+        console.error(`Fehler beim Speichern der Daten:`, error);
+        res.status(500).json({ error: 'Fehler beim Speichern der Daten.' });
+    }
+});
+
+
+
+
 
 // Fehlerbehandlung für nicht gefundene Routen
 app.use((req, res) => {

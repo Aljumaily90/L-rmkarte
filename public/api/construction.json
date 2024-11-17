@@ -1,29 +1,191 @@
 [
-    { "id": 1, "name": "Chäppelimattstrasse (Ebikon)", "lat": 47.08202, "lon": 8.34343, "endDate": "2025-12-31" },
-    { "id": 2, "name": "Wohnüberbauung Weichlen (Ebikon)", "lat": 47.07502, "lon": 8.34100, "endDate": "2025-12-31" },
-    { "id": 3, "name": "Neubauprojekt Zentrumsplatz (Ebikon)", "lat": 47.07954, "lon": 8.34230, "endDate": "2026-03-31" },
-    { "id": 4, "name": "Sanierung und Erweiterung Schulhaus Höfli (Ebikon)", "lat": 47.08240, "lon": 8.34490, "endDate": "2025-06-30" },
-    { "id": 5, "name": "Wohnüberbauung Sagen (Ebikon)", "lat": 47.08072, "lon": 8.35030, "endDate": "2026-12-31" },
-    { "id": 6, "name": "Seniorenresidenz Ebikon (Ebikon)", "lat": 47.08160, "lon": 8.33920, "endDate": "2025-07-31" },
-    { "id": 7, "name": "Neubau Einfamilienhaus mit Einliegerwohnung (Ebikon)", "lat": 47.09600, "lon": 8.36100, "endDate": "2024-12-31" },
-    { "id": 9, "name": "Neubau Mehrfamilienhaus mit 7 Wohneinheiten (Ebikon)", "lat": 47.10400, "lon": 8.39100, "endDate": "2025-12-31" },
-    { "id": 10, "name": "Neubauprojekt mit Duplexwohnungen (Ebikon)", "lat": 47.10450, "lon": 8.39150, "endDate": "2025-12-31" },
-    { "id": 11, "name": "Überbauung Reussperle, 3. Etappe (Buchrain)", "lat": 47.09600, "lon": 8.34900, "endDate": "2027-12-31" },
-    { "id": 12, "name": "Neubau Mehrfamilienhaus Nielsenstrasse 16 (Buchrain)", "lat": 47.09650, "lon": 8.35000, "endDate": "2025-12-31" },
-    { "id": 13, "name": "Neubau Mehrfamilienhaus Gartenweg 6 (Buchrain)", "lat": 47.09600, "lon": 8.35100, "endDate": "2025-12-31" },
-    { "id": 16, "name": "Überbauung Grünmatt 3. Etappe (Buchrain)", "lat": 47.09650, "lon": 8.35400, "endDate": "2025-12-31" },
-    { "id": 17, "name": "Überbauung Rütipark (Buchrain)", "lat": 47.09600, "lon": 8.35500, "endDate": "2025-12-31" },
-    { "id": 18, "name": "Überbauung St. Klemens (Buchrain)", "lat": 47.09650, "lon": 8.35600, "endDate": "2025-12-31" },
-    { "id": 19, "name": "Neubau Mehrfamilienhaus Buchfeldstrasse 20a (Buchrain)", "lat": 47.09600, "lon": 8.35700, "endDate": "2025-12-31" },
-    { "id": 20, "name": "Wohnüberbauung Gemsacker (Buchrain)", "lat": 47.09650, "lon": 8.35800, "endDate": "2025-12-31" },
-    { "id": 21, "name": "Wohnüberbauung Mattenhof (Kriens)", "lat": 47.0345, "lon": 8.2986, "endDate": "2025-12-31" },
-    { "id": 22, "name": "Neubauprojekt Pilatus Arena (Kriens)", "lat": 47.0332, "lon": 8.2998, "endDate": "2026-06-30" },
-    { "id": 23, "name": "Wohnüberbauung Schweighof (Kriens)", "lat": 47.0300, "lon": 8.3100, "endDate": "2026-12-31" },
-    { "id": 24, "name": "Neubauprojekt Mattenplatz (Kriens)", "lat": 47.0320, "lon": 8.3000, "endDate": "2026-12-31" },
-    { "id": 25, "name": "Wohnüberbauung Moyo (Horw)", "lat": 47.0150, "lon": 8.3080, "endDate": "2025-10-01" },
-    { "id": 26, "name": "Entwicklung Ziegeleipark (Horw)", "lat": 47.0200, "lon": 8.3100, "endDate": "2026-12-31" },
-    { "id": 27, "name": "Überbauung Eichhof West (Kriens)", "lat": 47.0350, "lon": 8.3100, "endDate": "2025-12-31" },
-    { "id": 28, "name": "Neubauprojekt solea (Kriens)", "lat": 47.0300, "lon": 8.3200, "endDate": "2025-12-31" },
-    { "id": 29, "name": "Neubauprojekt LUXE 13 (Luzern)", "lat": 47.0500, "lon": 8.3100, "endDate": "2025-12-31" },
-    { "id": 30, "name": "Neubauprojekt Rigistrasse 35 (Luzern)", "lat": 47.0500, "lon": 8.3200, "endDate": "2025-12-31" }
+  {
+    "id": 1,
+    "name": "Chäppelimattstrasse (Ebikon)",
+    "lat": 47.08202,
+    "lon": 8.34343,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 2,
+    "name": "Wohnüberbauung Weichlen (Ebikon)",
+    "lat": 47.07502,
+    "lon": 8.341,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 3,
+    "name": "Neubauprojekt Zentrumsplatz (Ebikon)",
+    "lat": 47.07954,
+    "lon": 8.3423,
+    "endDate": "2026-03-31"
+  },
+  {
+    "id": 4,
+    "name": "Sanierung und Erweiterung Schulhaus Höfli (Ebikon)",
+    "lat": 47.0824,
+    "lon": 8.3449,
+    "endDate": "2025-06-30"
+  },
+  {
+    "id": 5,
+    "name": "Wohnüberbauung Sagen (Ebikon)",
+    "lat": 47.08072,
+    "lon": 8.3503,
+    "endDate": "2026-12-31"
+  },
+  {
+    "id": 6,
+    "name": "Seniorenresidenz Ebikon (Ebikon)",
+    "lat": 47.0816,
+    "lon": 8.3392,
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": 7,
+    "name": "Neubau Einfamilienhaus mit Einliegerwohnung (Ebikon)",
+    "lat": 47.096,
+    "lon": 8.361,
+    "endDate": "2024-12-31"
+  },
+  {
+    "id": 9,
+    "name": "Neubau Mehrfamilienhaus mit 7 Wohneinheiten (Ebikon)",
+    "lat": 47.104,
+    "lon": 8.391,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 10,
+    "name": "Neubauprojekt mit Duplexwohnungen (Ebikon)",
+    "lat": 47.1045,
+    "lon": 8.3915,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 11,
+    "name": "Überbauung Reussperle, 3. Etappe (Buchrain)",
+    "lat": 47.096,
+    "lon": 8.349,
+    "endDate": "2027-12-31"
+  },
+  {
+    "id": 12,
+    "name": "Neubau Mehrfamilienhaus Nielsenstrasse 16 (Buchrain)",
+    "lat": 47.0965,
+    "lon": 8.35,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 13,
+    "name": "Neubau Mehrfamilienhaus Gartenweg 6 (Buchrain)",
+    "lat": 47.096,
+    "lon": 8.351,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 16,
+    "name": "Überbauung Grünmatt 3. Etappe (Buchrain)",
+    "lat": 47.0965,
+    "lon": 8.354,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 17,
+    "name": "Überbauung Rütipark (Buchrain)",
+    "lat": 47.096,
+    "lon": 8.355,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 18,
+    "name": "Überbauung St. Klemens (Buchrain)",
+    "lat": 47.0965,
+    "lon": 8.356,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 19,
+    "name": "Neubau Mehrfamilienhaus Buchfeldstrasse 20a (Buchrain)",
+    "lat": 47.096,
+    "lon": 8.357,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 20,
+    "name": "Wohnüberbauung Gemsacker (Buchrain)",
+    "lat": 47.0965,
+    "lon": 8.358,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 21,
+    "name": "Wohnüberbauung Mattenhof (Kriens)",
+    "lat": 47.0345,
+    "lon": 8.2986,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 22,
+    "name": "Neubauprojekt Pilatus Arena (Kriens)",
+    "lat": 47.0332,
+    "lon": 8.2998,
+    "endDate": "2026-06-30"
+  },
+  {
+    "id": 23,
+    "name": "Wohnüberbauung Schweighof (Kriens)",
+    "lat": 47.03,
+    "lon": 8.31,
+    "endDate": "2026-12-31"
+  },
+  {
+    "id": 24,
+    "name": "Neubauprojekt Mattenplatz (Kriens)",
+    "lat": 47.032,
+    "lon": 8.3,
+    "endDate": "2026-12-31"
+  },
+  {
+    "id": 25,
+    "name": "Wohnüberbauung Moyo (Horw)",
+    "lat": 47.015,
+    "lon": 8.308,
+    "endDate": "2025-10-01"
+  },
+  {
+    "id": 26,
+    "name": "Entwicklung Ziegeleipark (Horw)",
+    "lat": 47.02,
+    "lon": 8.31,
+    "endDate": "2026-12-31"
+  },
+  {
+    "id": 27,
+    "name": "Überbauung Eichhof West (Kriens)",
+    "lat": 47.035,
+    "lon": 8.31,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 28,
+    "name": "Neubauprojekt solea (Kriens)",
+    "lat": 47.03,
+    "lon": 8.32,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 29,
+    "name": "Neubauprojekt LUXE 13 (Luzern)",
+    "lat": 47.05,
+    "lon": 8.31,
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": 30,
+    "name": "Neubauprojekt Rigistrasse 35 (Luzern)",
+    "lat": 47.05,
+    "lon": 8.32,
+    "endDate": "2025-12-31"
+  }
 ]

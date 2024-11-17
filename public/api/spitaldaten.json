@@ -1,9 +1,0 @@
-[
-    { "id": 1, "name": "Luzerner kantonsspital", "lat": 47.059242, "lon": 8.297553 },
-    { "id": 2, "name": "Hirslanden Klinik St. Anna", "lat": 47.05705, "lon": 8.32739 },
-    { "id": 3, "name": "Zuger Kantonsspital", "lat": 47.194083, "lon": 8.517874 },
-    { "id": 4, "name": "Spital Nidwalden", "lat": 46.963694, "lon": 8.367040 },
-    { "id": 5, "name": "Kantonsspital Obwalden", "lat": 46.894510, "lon": 8.250430 }
-]
-
-

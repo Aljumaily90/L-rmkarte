@@ -220,6 +220,46 @@
         <!-- Hier wird die Karte geladen (Leaflet-Map) -->
         <div id="map" class="w-100 h-100"></div>
     </div>
+    <!-- Modal für die Auswahl von Kategorien -->
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryModalLabel">Koordinaten und Kategorie auswählen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Koordinatenanzeige -->
+                <p><strong>Koordinaten:</strong> <span id="selectedCoordinates">-</span></p>
+                
+                <!-- Dropdown für die Kategorie -->
+                <div class="mb-3">
+                    <label for="categorySelect" class="form-label">Kategorie:</label>
+                    <select id="categorySelect" class="form-select">
+                        <option value="" selected disabled>Kategorie wählen</option>
+                        <option value="hospitals">Spitäler</option>
+                        <option value="construction">Baustellen</option>
+                        <option value="churches">Kirchenglocken</option>
+                        <option value="military_airports">Militärflugplätze</option>
+                        <option value="airports">Flughäfen</option>
+                    </select>
+                </div>
+                
+                <!-- Zusätzlicher Bereich für Baustellen-Enddatum -->
+                <div id="constructionDateField" class="mb-3 d-none">
+                    <label for="constructionEndDate" class="form-label">Enddatum der Baustelle:</label>
+                    <input type="date" id="constructionEndDate" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" id="submitCategory" class="btn btn-primary">Senden</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
         <!-- Footer -->
         <footer class="bg-secondary text-white text-center py-3">
             <div class="container">

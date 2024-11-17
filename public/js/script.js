@@ -131,6 +131,72 @@ if (!localStorage.getItem('viewChangeHintShown')) {
     alert('Wechseln Sie zwischen den Kartenansichten mit den Optionen oben.');
     localStorage.setItem('viewChangeHintShown', 'true');
 }
+/**************************************************************************************************/
+/*************************************** Modal und Dropdown-Logik *********************************/
+// Öffne Modal bei Klick auf die Karte
+map.on('click', (e) => {
+    const { lat, lng } = e.latlng;
+
+    // Zeige Modal an und aktualisiere Koordinaten
+    document.getElementById('selectedCoordinates').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+    categoryModal.show();
+});
+
+// Enddatum-Feld dynamisch anzeigen, wenn Baustellen ausgewählt werden
+document.getElementById('categorySelect').addEventListener('change', function (e) {
+    const selectedCategory = e.target.value;
+    const constructionField = document.getElementById('constructionDateField');
+
+    if (selectedCategory === 'construction') {
+        constructionField.classList.remove('d-none');
+    } else {
+        constructionField.classList.add('d-none');
+    }
+});
+
+// Daten senden (Modal-Button)
+document.getElementById('submitCategory').addEventListener('click', function () {
+    const coordinates = document.getElementById('selectedCoordinates').textContent;
+    const category = document.getElementById('categorySelect').value;
+    const endDate = document.getElementById('constructionEndDate').value;
+
+    if (!category) {
+        alert('Bitte wählen Sie eine Kategorie aus!');
+        return;
+    }
+
+    const data = {
+        coordinates: coordinates.split(',').map(coord => parseFloat(coord.trim())),
+        category: category,
+        endDate: category === 'construction' ? endDate : null,
+    };
+
+    // Sende die Daten an das Backend
+    fetch('/api/save-data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => response.json())
+        .then(result => {
+            alert('Daten erfolgreich gesendet!');
+            console.log(result);
+        })
+        .catch(error => {
+            alert('Fehler beim Senden der Daten.');
+            console.error(error);
+        });
+
+    // Schließe das Modal
+    const categoryModal = bootstrap.Modal.getInstance(document.getElementById('categoryModal'));
+    categoryModal.hide();
+});
+
+
+
 /************************************************************************************ */
 /******************************************** Strassen Lärem**************************************** */
 // Erfasse den Schieberegler, die Checkbox und die Layer für Tag/Nacht-Lärm
@@ -279,14 +345,7 @@ L.control.zoom({
 document.querySelector('.leaflet-control-zoom-in').remove();
 /************************************************************************************************** */
 /***********************************************Koordinaten*************************************************** */
-// Popup bei Klick auf die Karte anzeigen
-map.on('click', (e) => {
-    const { lat, lng } = e.latlng;
-    L.popup()
-        .setLatLng(e.latlng)
-        .setContent(`Koordinaten: <br> Latitude: ${lat.toFixed(5)} <br> Longitude: ${lng.toFixed(5)}`)
-        .openOn(map);
-});
+
 /************************************************************************************************** */
 /**************************************************Helper-Funktion************************************************ */
 // Helper-Funktion zum Laden von Daten
@@ -473,10 +532,10 @@ const createNoiseCircle = (id, lat, lon, category) => {
 // Eventlistener für die Spitäler-Checkbox
 $('#filterHospitals').change(() => {
     if ($('#filterHospitals').is(':checked')) {
-        loadMarkers('/api/spitaldaten', icons.hospital, clusterGroups.hospital, hospitalsLoaded);
+        loadMarkers('/api/hospitals', icons.hospital, clusterGroups.hospital, hospitalsLoaded);
 
         // Füge Lärmradius mit Farbverlauf hinzu
-        fetchData('/api/spitaldaten', (data) => {
+        fetchData('/api/hospitals', (data) => {
             data.forEach(item => {
                 createNoiseCircle(`hospital-${item.id}`, item.lat, item.lon, 'hospital'); // ID und Kategorie übergeben
             });

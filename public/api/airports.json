@@ -1,17 +1,92 @@
 [
-    { "id": 1, "name": "Flughafen Zürich", "lat": 47.4647, "lon": 8.5491 },
-    { "id": 2, "name": "Flughafen Genf", "lat": 46.2381, "lon": 6.1088 },
-    { "id": 3, "name": "EuroAirport Basel-Mülhausen-Freiburg", "lat": 47.5989, "lon": 7.5299 },
-    { "id": 4, "name": "Flughafen Bern-Belp", "lat": 46.9136, "lon": 7.4998 },
-    { "id": 5, "name": "Flughafen Lugano-Agno", "lat": 46.0037, "lon": 8.9104 },
-    { "id": 6, "name": "Flughafen St. Gallen-Altenrhein", "lat": 47.4850, "lon": 9.5616 },
-    { "id": 7, "name": "Flughafen Sion", "lat": 46.2190, "lon": 7.3266 },
-    { "id": 8, "name": "Flughafen Grenchen", "lat": 47.1823, "lon": 7.4173 },
-    { "id": 9, "name": "Flughafen Lausanne-Blécherette", "lat": 46.5451, "lon": 6.6164 },
-    { "id": 10, "name": "Flughafen Les Eplatures", "lat": 47.0831, "lon": 6.7929 },
-    { "id": 11, "name": "Flughafen Samedan", "lat": 46.5337, "lon": 9.8843 },
-    { "id": 12, "name": "Flughafen Bressaucourt", "lat": 47.4081, "lon": 7.0764 },
-    { "id": 13, "name": "Flughafen Ecuvillens", "lat": 46.7492, "lon": 7.0588 },
-    { "id": 14, "name": "Flughafen Birrfeld", "lat": 47.4340, "lon": 8.2365 },
-    { "id": 15, "name": "Flughafen Hausen am Albis", "lat": 47.2461, "lon": 8.5323 }
+  {
+    "id": 1,
+    "name": "Flughafen Zürich",
+    "lat": 47.4647,
+    "lon": 8.5491
+  },
+  {
+    "id": 2,
+    "name": "Flughafen Genf",
+    "lat": 46.2381,
+    "lon": 6.1088
+  },
+  {
+    "id": 3,
+    "name": "EuroAirport Basel-Mülhausen-Freiburg",
+    "lat": 47.5989,
+    "lon": 7.5299
+  },
+  {
+    "id": 4,
+    "name": "Flughafen Bern-Belp",
+    "lat": 46.9136,
+    "lon": 7.4998
+  },
+  {
+    "id": 5,
+    "name": "Flughafen Lugano-Agno",
+    "lat": 46.0037,
+    "lon": 8.9104
+  },
+  {
+    "id": 6,
+    "name": "Flughafen St. Gallen-Altenrhein",
+    "lat": 47.485,
+    "lon": 9.5616
+  },
+  {
+    "id": 7,
+    "name": "Flughafen Sion",
+    "lat": 46.219,
+    "lon": 7.3266
+  },
+  {
+    "id": 8,
+    "name": "Flughafen Grenchen",
+    "lat": 47.1823,
+    "lon": 7.4173
+  },
+  {
+    "id": 9,
+    "name": "Flughafen Lausanne-Blécherette",
+    "lat": 46.5451,
+    "lon": 6.6164
+  },
+  {
+    "id": 10,
+    "name": "Flughafen Les Eplatures",
+    "lat": 47.0831,
+    "lon": 6.7929
+  },
+  {
+    "id": 11,
+    "name": "Flughafen Samedan",
+    "lat": 46.5337,
+    "lon": 9.8843
+  },
+  {
+    "id": 12,
+    "name": "Flughafen Bressaucourt",
+    "lat": 47.4081,
+    "lon": 7.0764
+  },
+  {
+    "id": 13,
+    "name": "Flughafen Ecuvillens",
+    "lat": 46.7492,
+    "lon": 7.0588
+  },
+  {
+    "id": 14,
+    "name": "Flughafen Birrfeld",
+    "lat": 47.434,
+    "lon": 8.2365
+  },
+  {
+    "id": 15,
+    "name": "Flughafen Hausen am Albis",
+    "lat": 47.2461,
+    "lon": 8.5323
+  }
 ]
