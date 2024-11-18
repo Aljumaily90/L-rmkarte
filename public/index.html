@@ -40,7 +40,7 @@
                                 <a class="nav-link active" aria-current="page" href="./about.html">Über uns</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link active" href="./kontakten.html">Kontakten</a>
+                                <a class="nav-link active" href="./kontakten.html">Kontakt</a>
                               </li>
                               <li class="nav-item">
                                 <a class="nav-link active" href="#">Pricing</a>
@@ -231,7 +231,11 @@
             <div class="modal-body">
                 <!-- Koordinatenanzeige -->
                 <p><strong>Koordinaten:</strong> <span id="selectedCoordinates">-</span></p>
-                
+                    <!-- Eingabefeld für den Namen der Lärmquelle -->
+                <div class="mb-3">
+                    <label for="noiseSourceName" class="form-label">Name der Lärmquelle:</label>
+                    <input type="text" id="noiseSourceName" class="form-control" placeholder="Name der Lärmquelle eingeben">
+                </div>
                 <!-- Dropdown für die Kategorie -->
                 <div class="mb-3">
                     <label for="categorySelect" class="form-label">Kategorie:</label>

@@ -8,7 +8,7 @@ const map = L.map('map').setView([46.8182, 8.2275], 8);
 
 // Initialisierung der Kartenansichten
 var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', {
-    minZoom: 9,
+    minZoom: 8.5,
     maxZoom: 21,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
@@ -19,7 +19,7 @@ var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo
 // Swisstopo Satellitenansicht
 var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg', {
     maxZoom: 21,
-    minZoom: 9,
+    minZoom: 8.5,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
     subdomains: '123',
@@ -29,14 +29,14 @@ var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
 // Schwarz-Weiß-Karte von Swisstopo
 var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg', {
     maxZoom: 21,
-    minZoom: 9,
+    minZoom: 8.5,
     updateWhenIdle: true,
     useCache: true,
     subdomains: '123',
     attribution: '&copy; <a href="https://www.swisstopo.admin.ch/de/home.html">swisstopo</a>'
 });
 // Standard-Karte beim Laden hinzufügen
-map.addLayer(grayscaleLayer);
+map.addLayer(standardLayer);
 
 // Eventlistener zum Wechseln der Kartenansicht
 function changeMapLayer(newLayer) {
@@ -133,7 +133,7 @@ if (!localStorage.getItem('viewChangeHintShown')) {
 }
 /**************************************************************************************************/
 /*************************************** Modal und Dropdown-Logik *********************************/
-// Öffne Modal bei Klick auf die Karte
+// Öffne Modal bei Klick auf die Karte 
 map.on('click', (e) => {
     const { lat, lng } = e.latlng;
 
@@ -159,43 +159,56 @@ document.getElementById('categorySelect').addEventListener('change', function (e
 document.getElementById('submitCategory').addEventListener('click', function () {
     const coordinates = document.getElementById('selectedCoordinates').textContent;
     const category = document.getElementById('categorySelect').value;
+    const name = document.getElementById('noiseSourceName').value.trim(); // Neues Feld für den Namen
     const endDate = document.getElementById('constructionEndDate').value;
 
+    // Validierung der Eingaben
     if (!category) {
         alert('Bitte wählen Sie eine Kategorie aus!');
         return;
     }
+    if (!name) {
+        alert('Bitte geben Sie einen Namen für die Lärmquelle ein!');
+        return;
+    }
 
+    // Erstelle das Datenobjekt
     const data = {
         coordinates: coordinates.split(',').map(coord => parseFloat(coord.trim())),
         category: category,
-        endDate: category === 'construction' ? endDate : null,
+        name: name, // Name wird vom Nutzer eingegeben
+        endDate: category === 'construction' ? endDate : null, // Enddatum nur für Baustellen
     };
 
     // Sende die Daten an das Backend
-    fetch('/api/save-data', {
+    fetch('/api/add-noise-source', { // Verwende den neuen Endpunkt
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Fehler: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(result => {
-            alert('Daten erfolgreich gesendet!');
-            console.log(result);
+            alert('Die Lärmquelle wurde erfolgreich zur Überprüfung eingereicht!');
+            console.log(result); // Zeigt die Antwort des Servers
         })
         .catch(error => {
-            alert('Fehler beim Senden der Daten.');
+            alert('Fehler beim Einreichen der Lärmquelle.');
             console.error(error);
         });
 
     // Schließe das Modal
     const categoryModal = bootstrap.Modal.getInstance(document.getElementById('categoryModal'));
-    categoryModal.hide();
+    if (categoryModal) {
+        categoryModal.hide();
+    }
 });
-
-
 
 /************************************************************************************ */
 /******************************************** Strassen Lärem**************************************** */
@@ -524,7 +537,15 @@ const createNoiseCircle = (id, lat, lon, category) => {
 };
 
     
-   
+// Entferne Noise-Circles von der Karte
+function removeNoiseCircle(id) {
+    if (markerNoiseMapping[id]) {
+        markerNoiseMapping[id].circles.forEach(circle => {
+            map.removeLayer(circle);
+        });
+        delete markerNoiseMapping[id]; // Entferne die Zuordnung aus dem Mapping
+    }
+}   
 
 /************************************ Eventlistener *********************************************** */
 
@@ -849,3 +870,15 @@ document.querySelectorAll('.info-btn').forEach(button => {
         }, { once: true });
     });
 });
+
+// Lädt ausstehende Lärmquellen
+function loadPendingNoiseSources() {
+    fetch('/public/api/pending.json')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Ausstehende Lärmquellen:', data);
+            updateAdminDashboard(data); // Daten an eine Funktion zur Anzeige im Dashboard übergeben
+        })
+        .catch(error => console.error('Fehler beim Laden der Warteschlange:', error));
+}
+

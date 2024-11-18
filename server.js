@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const NodeCache = require('node-cache');
 const fs = require('fs'); // Modul zum Lesen von Dateien
 const path = require('path'); // Modul zum Verwalten von Pfaden
+const basicAuth = require('express-basic-auth'); // Basic Auth Middleware
+
 
 const app = express();
 const port = 3000;
@@ -59,8 +61,18 @@ app.use(helmet.contentSecurityPolicy({
         upgradeInsecureRequests: [],
     }
 }));
+
+// Basic Auth Middleware für die Admin-Seite
+app.use('/admin.html', basicAuth({
+    users: { 'admin': 'securepassword123' }, // Benutzername: admin, Passwort: securepassword123
+    challenge: true, // Zeigt die Authentifizierungsaufforderung im Browser an
+    unauthorizedResponse: (req) => 'Zugriff verweigert: Ungültige Anmeldedaten',
+}));
 // Statische Dateien aus dem 'public' Verzeichnis bereitstellen
 app.use(express.static('public'));
+
+
+
 
 // Caching für API-Antworten
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
@@ -152,56 +164,107 @@ app.get('/api/construction', cacheMiddleware, (req, res) => {
     }
 });
 
-app.post('/api/save-data', (req, res) => {
-    const { coordinates, category, name = 'Neues Objekt', endDate } = req.body;
+app.post('/api/add-noise-source', (req, res) => {
+    const { coordinates, category, name, endDate } = req.body;
 
-    // Prüfung: Sind die erforderlichen Felder vorhanden?
-    if (!coordinates || !category) {
+    if (!coordinates || !category || !name) {
         return res.status(400).json({
-            error: 'Ungültige Anfrage. Koordinaten und Kategorie sind erforderlich.'
+            error: 'Ungültige Anfrage. Koordinaten, Kategorie und Name sind erforderlich.'
         });
     }
 
-    // Datei basierend auf der Kategorie auswählen
-    const filePath = `./public/api/${category}.json`;
+    // Warteschlange-Datei
+    const pendingFilePath = './public/api/pending.json';
 
     try {
-        // Bestehende Daten laden oder leeres Array erstellen
-        const existingData = loadJSON(filePath) || [];
+        // Bestehende Warteschlange laden oder leeres Array erstellen
+        const pendingData = loadJSON(pendingFilePath) || [];
 
-        // Automatische ID-Berechnung (höchste ID + 1 oder ID = 1, falls leer)
-        const newId = existingData.length > 0
-            ? Math.max(...existingData.map(item => item.id)) + 1
+        // Automatische ID für die Warteschlange
+        const newId = pendingData.length > 0
+            ? Math.max(...pendingData.map(item => item.id)) + 1
             : 1;
 
-        // Neuen Eintrag erstellen
+        // Neues Objekt erstellen
         const newEntry = {
             id: newId,
-            name: name, // Falls kein Name angegeben ist, wird 'Neues Objekt' verwendet
+            name: name,
+            category: category,
             lat: coordinates[0],
-            lon: coordinates[1]
+            lon: coordinates[1],
+            status: 'pending' // Status 'pending' für noch nicht genehmigte Einträge
         };
 
-        // Falls Kategorie 'construction', füge `endDate` hinzu
+        // Enddatum nur für Baustellen hinzufügen
         if (category === 'construction' && endDate) {
             newEntry.end_date = endDate;
         }
 
-        // Neuen Eintrag hinzufügen und speichern
-        existingData.push(newEntry);
-        saveJSON(filePath, existingData);
+        // Neues Objekt in die Warteschlange hinzufügen
+        pendingData.push(newEntry);
+        saveJSON(pendingFilePath, pendingData);
 
-        // Erfolgsmeldung zurücksenden
         res.json({
             success: true,
-            message: 'Daten erfolgreich gespeichert!',
+            message: 'Lärmquelle erfolgreich zur Überprüfung eingereicht!',
             data: newEntry
         });
     } catch (error) {
-        console.error(`Fehler beim Speichern der Daten:`, error);
+        console.error(`Fehler beim Speichern in die Warteschlange:`, error);
         res.status(500).json({ error: 'Fehler beim Speichern der Daten.' });
     }
 });
+
+app.post('/api/approve-noise-source', (req, res) => {
+    const { id, approve } = req.body;
+
+    if (typeof id === 'undefined' || typeof approve === 'undefined') {
+        return res.status(400).json({
+            error: 'Ungültige Anfrage. ID und Genehmigungsstatus sind erforderlich.'
+        });
+    }
+
+    const pendingFilePath = './public/api/pending.json';
+
+    try {
+        // Warteschlange laden
+        const pendingData = loadJSON(pendingFilePath) || [];
+        const entryIndex = pendingData.findIndex(item => item.id === id);
+
+        if (entryIndex === -1) {
+            return res.status(404).json({
+                error: 'Eintrag mit der angegebenen ID nicht gefunden.'
+            });
+        }
+
+        const entry = pendingData[entryIndex];
+
+        if (approve) {
+            // Genehmigen: In die richtige Kategorie-Datei verschieben
+            const filePath = `./public/api/${entry.category}.json`;
+            const categoryData = loadJSON(filePath) || [];
+
+            // Entferne den Status für genehmigte Einträge
+            delete entry.status;
+
+            categoryData.push(entry);
+            saveJSON(filePath, categoryData);
+
+            res.json({ success: true, message: 'Lärmquelle genehmigt und hinzugefügt!', data: entry });
+        } else {
+            // Ablehnen: Eintrag bleibt nicht gespeichert
+            res.json({ success: true, message: 'Lärmquelle wurde abgelehnt!', data: entry });
+        }
+
+        // Eintrag aus der Warteschlange entfernen
+        pendingData.splice(entryIndex, 1);
+        saveJSON(pendingFilePath, pendingData);
+    } catch (error) {
+        console.error(`Fehler beim Genehmigen/Ablehnen der Lärmquelle:`, error);
+        res.status(500).json({ error: 'Fehler beim Verarbeiten der Anfrage.' });
+    }
+});
+
 
 
 
