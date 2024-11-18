@@ -43,7 +43,7 @@
                                 <a class="nav-link active" href="./kontakten.html">Kontakt</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link active" href="#">Pricing</a>
+                                <a class="nav-link active" href="#">placeholder</a>
                               </li>
                     
                             </ul>
@@ -70,6 +70,7 @@
                     <!-- Suchbutton -->
                     <button id="submit" class="btn btn-success ms-2" type="submit">Suche</button>
                 </form>
+                <button id="openModalButton" class="btn btn-primary">Lärmquelle hinzufügen</button>
 
 
                 <!-- Dropdown für Kartenansicht mit einem Icon als Trigger -->
@@ -220,6 +221,15 @@
         <!-- Hier wird die Karte geladen (Leaflet-Map) -->
         <div id="map" class="w-100 h-100"></div>
     </div>
+
+    <div id="contextMenu" class="d-none">
+        <ul>
+            <li id="addNoiseSource">Lärmquelle hinzufügen</li>
+            <li id="correctionOption">Korrektur</li>
+            <li id="showCoordinates"></li>
+        </ul>
+    </div>
+    
     <!-- Modal für die Auswahl von Kategorien -->
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -265,7 +275,7 @@
 
 
         <!-- Footer -->
-        <footer class="bg-secondary text-white text-center py-3">
+        <footer class="bg-secondary text-white text-center py-0">
             <div class="container">
                 <p class="mb-0">© 2024 Dein Projekt. Gemeinsam Brücken bauen.</p>
             </div>

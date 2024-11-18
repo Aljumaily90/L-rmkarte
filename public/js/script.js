@@ -8,7 +8,7 @@ const map = L.map('map').setView([46.8182, 8.2275], 8);
 
 // Initialisierung der Kartenansichten
 var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg', {
-    minZoom: 8.5,
+    minZoom: 9,
     maxZoom: 21,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
@@ -19,7 +19,7 @@ var standardLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo
 // Swisstopo Satellitenansicht
 var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg', {
     maxZoom: 21,
-    minZoom: 8.5,
+    minZoom: 9,
     updateWhenIdle: true, // Tiles werden nur dann aktualisiert, wenn die Karte ruhig ist.
     useCache: true, // Caching aktivieren (erfordert ein entsprechendes Plugin)
     subdomains: '123',
@@ -29,7 +29,7 @@ var satelliteLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstop
 // Schwarz-Weiß-Karte von Swisstopo
 var grayscaleLayer = L.tileLayer('https://wmts{s}.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/3857/{z}/{x}/{y}.jpeg', {
     maxZoom: 21,
-    minZoom: 8.5,
+    minZoom: 9,
     updateWhenIdle: true,
     useCache: true,
     subdomains: '123',
@@ -882,3 +882,111 @@ function loadPendingNoiseSources() {
         .catch(error => console.error('Fehler beim Laden der Warteschlange:', error));
 }
 
+//////////////////////////Logik zum Anzeigen des Kontextmenüs//////////////////////////////
+let selectedCoordinates = null;
+
+// Entferne Eventlistener für Linksklick auf die Karte, falls vorhanden
+map.off('click');
+
+// Eventlistener für Rechtsklick auf die Karte
+map.on('contextmenu', function (e) {
+    // Koordinaten speichern
+    selectedCoordinates = e.latlng;
+
+    // Positioniere das Kontextmenü
+    const contextMenu = document.getElementById('contextMenu');
+    contextMenu.style.left = `${e.originalEvent.pageX}px`;
+    contextMenu.style.top = `${e.originalEvent.pageY}px`;
+    contextMenu.classList.remove('d-none');
+
+    // Aktualisiere den Text für Koordinatenanzeige im Menü
+    const coordinateText = `Koordinaten: ${selectedCoordinates.lat.toFixed(5)}, ${selectedCoordinates.lng.toFixed(5)}`;
+    document.getElementById('showCoordinates').textContent = coordinateText;
+});
+
+// Kontextmenü ausblenden bei Klick außerhalb
+document.addEventListener('click', (e) => {
+    const contextMenu = document.getElementById('contextMenu');
+    if (!contextMenu.contains(e.target)) {
+        contextMenu.classList.add('d-none');
+    }
+});
+
+// Aktion: Lärmquelle hinzufügen
+document.getElementById('addNoiseSource').addEventListener('click', () => {
+    if (selectedCoordinates) {
+        const { lat, lng } = selectedCoordinates;
+        document.getElementById('selectedCoordinates').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+        categoryModal.show();
+    } else {
+        alert('Keine Koordinaten ausgewählt!');
+    }
+});
+
+// Aktion: Korrektur
+document.getElementById('correctionOption').addEventListener('click', () => {
+    alert('Funktion "Korrektur" wird implementiert.');
+    // Hier kannst du die Korrektur-Logik implementieren
+});
+
+// Aktion: Koordinaten anzeigen und kopieren
+document.getElementById('showCoordinates').addEventListener('click', () => {
+    if (selectedCoordinates) {
+        const { lat, lng } = selectedCoordinates;
+        const coordinateText = `Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`;
+
+        // Kopiere die Koordinaten in die Zwischenablage
+        navigator.clipboard.writeText(coordinateText).then(() => {
+            alert(`Koordinaten kopiert: ${coordinateText}`);
+        }).catch(err => {
+            console.error('Fehler beim Kopieren in die Zwischenablage:', err);
+            alert('Fehler beim Kopieren der Koordinaten.');
+        });
+    } else {
+        alert('Keine Koordinaten ausgewählt!');
+    }
+});
+///////////////////////button Lärmquelle////////////////////
+
+
+
+// Eventlistener für den Button zum Öffnen des Modals oder zur Aktivierung des Kartenclicks
+document.getElementById('openModalButton').addEventListener('click', () => {
+    if (!selectedCoordinates) {
+        alert('Bitte klicken Sie auf die Karte, um eine Position auszuwählen.');
+        enableMapClickForModal(); // Aktiviert das Kartenklicken, falls noch keine Koordinaten ausgewählt wurden
+    } else {
+        openCategoryModal(selectedCoordinates); // Öffnet das Modal, wenn Koordinaten bereits vorhanden sind
+    }
+});
+
+// Aktiviert das Klicken auf die Karte und öffnet direkt das Modal
+function enableMapClickForModal() {
+    // Entferne vorherige Listener, um Mehrfachbindungen zu vermeiden
+    map.off('click');
+
+    // Füge einen neuen Listener hinzu
+    map.on('click', function onMapClick(e) {
+        // Speichere die Koordinaten
+        selectedCoordinates = e.latlng;
+
+        // Öffne das Modal mit den ausgewählten Koordinaten
+        openCategoryModal(selectedCoordinates);
+
+        // Entferne den Eventlistener, wenn die Koordinaten ausgewählt wurden
+        map.off('click', onMapClick);
+    });
+}
+
+// Öffnet das Modal mit den ausgewählten Koordinaten
+function openCategoryModal(coordinates) {
+    const { lat, lng } = coordinates;
+
+    // Aktualisiere die Koordinatenanzeige im Modal
+    document.getElementById('selectedCoordinates').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+    // Zeige das Modal an
+    const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
+    categoryModal.show();
+}
