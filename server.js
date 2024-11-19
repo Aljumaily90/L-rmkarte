@@ -116,8 +116,8 @@ const saveJSON = (filePath, data) => {
 // API-Endpunkte mit Daten aus JSON-Dateien
 
 /// API-Endpunkt für Spitaldaten
-app.get('/api/hospitals', cacheMiddleware, (req, res) => {
-    const spitalDaten = loadJSON('./public/api/hospitals.json');
+app.get('/api/hospitals.json', cacheMiddleware, (req, res) => {
+    const spitalDaten = loadJSON('/api/hospitals.json');
     if (spitalDaten) {
         res.json(spitalDaten);
     } else {
@@ -127,7 +127,7 @@ app.get('/api/hospitals', cacheMiddleware, (req, res) => {
 
 // API-Endpunkt für Militärflugplätze
 app.get('/api/military_airports', cacheMiddleware, (req, res) => {
-    const militaryAirportsDaten = loadJSON('./public/api/military_airports.json');
+    const militaryAirportsDaten = loadJSON('/api/military_airports.json');
     if (militaryAirportsDaten) {
         res.json(militaryAirportsDaten);
     } else {
@@ -137,7 +137,7 @@ app.get('/api/military_airports', cacheMiddleware, (req, res) => {
 
 // API-Endpunkt für Flughäfen
 app.get('/api/airports', cacheMiddleware, (req, res) => {
-    const airportsDaten = loadJSON('./public/api/airports.json');
+    const airportsDaten = loadJSON('/api/airports.json');
     if (airportsDaten) {
         res.json(airportsDaten);
     } else {
@@ -147,7 +147,7 @@ app.get('/api/airports', cacheMiddleware, (req, res) => {
 
 
 app.get('/api/churches', cacheMiddleware, (req, res) => {
-    const churchesDaten = loadJSON('/public/api/churches.json');
+    const churchesDaten = loadJSON('/api/churches.json');
     if (churchesDaten) {
         res.json(churchesDaten);
     } else {
@@ -156,7 +156,7 @@ app.get('/api/churches', cacheMiddleware, (req, res) => {
 });
 
 app.get('/api/construction', cacheMiddleware, (req, res) => {
-    const constructionDaten = loadJSON('/public/api/construction.json');
+    const constructionDaten = loadJSON('/api/construction.json');
     if (constructionDaten) {
         res.json(constructionDaten);
     } else {
@@ -164,6 +164,15 @@ app.get('/api/construction', cacheMiddleware, (req, res) => {
     }
 });
 
+// API-Endpunkt für Pending-Daten
+app.get('/api/pending.json', cacheMiddleware, (req, res) => {
+    const pendingData = loadJSON('./api/pending.json');
+    if (pendingData) {
+        res.json(pendingData);
+    } else {
+        res.status(500).json({ error: 'Fehler beim Laden der Pending-Daten' });
+    }
+});
 app.post('/api/add-noise-source', (req, res) => {
     const { coordinates, category, name, endDate } = req.body;
 
@@ -174,7 +183,7 @@ app.post('/api/add-noise-source', (req, res) => {
     }
 
     // Warteschlange-Datei
-    const pendingFilePath = './public/api/pending.json';
+    const pendingFilePath = '/api/pending.json';
 
     try {
         // Bestehende Warteschlange laden oder leeres Array erstellen
@@ -224,7 +233,7 @@ app.post('/api/approve-noise-source', (req, res) => {
         });
     }
 
-    const pendingFilePath = './public/api/pending.json';
+    const pendingFilePath = '/api/pending.json';
 
     try {
         // Warteschlange laden
@@ -241,7 +250,7 @@ app.post('/api/approve-noise-source', (req, res) => {
 
         if (approve) {
             // Genehmigen: In die richtige Kategorie-Datei verschieben
-            const filePath = `./public/api/${entry.category}.json`;
+            const filePath = `/api/${entry.category}.json`;
             const categoryData = loadJSON(filePath) || [];
 
             // Entferne den Status für genehmigte Einträge

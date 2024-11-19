@@ -1,6 +1,6 @@
 // Funktion: Lädt ausstehende Lärmquellen
 function loadPendingNoiseSources() {
-    fetch('../api/pending.json')
+    fetch('/api/pending.json')
         .then(response => response.json())
         .then(data => {
             console.log('Ausstehende Lärmquellen:', data);

@@ -181,7 +181,7 @@ document.getElementById('submitCategory').addEventListener('click', function () 
     };
 
     // Sende die Daten an das Backend
-    fetch('/api/add-noise-source', { // Verwende den neuen Endpunkt
+    fetch('./api/add-noise-source', { // Verwende den neuen Endpunkt
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -553,10 +553,10 @@ function removeNoiseCircle(id) {
 // Eventlistener für die Spitäler-Checkbox
 $('#filterHospitals').change(() => {
     if ($('#filterHospitals').is(':checked')) {
-        loadMarkers('/api/hospitals', icons.hospital, clusterGroups.hospital, hospitalsLoaded);
+        loadMarkers('/api/hospitals.json', icons.hospital, clusterGroups.hospital, hospitalsLoaded);
 
         // Füge Lärmradius mit Farbverlauf hinzu
-        fetchData('/api/hospitals', (data) => {
+        fetchData('/api/hospitals.json', (data) => {
             data.forEach(item => {
                 createNoiseCircle(`hospital-${item.id}`, item.lat, item.lon, 'hospital'); // ID und Kategorie übergeben
             });
@@ -873,7 +873,7 @@ document.querySelectorAll('.info-btn').forEach(button => {
 
 // Lädt ausstehende Lärmquellen
 function loadPendingNoiseSources() {
-    fetch('/public/api/pending.json')
+    fetch('./api/pending.json')
         .then(response => response.json())
         .then(data => {
             console.log('Ausstehende Lärmquellen:', data);
@@ -989,4 +989,10 @@ function openCategoryModal(coordinates) {
     // Zeige das Modal an
     const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
     categoryModal.show();
+
+    // Füge Eventlistener hinzu, um `selectedCoordinates` zurückzusetzen, wenn das Modal geschlossen wird
+    const modalElement = document.getElementById('categoryModal');
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        selectedCoordinates = null; // Zurücksetzen der Koordinaten
+    });
 }
