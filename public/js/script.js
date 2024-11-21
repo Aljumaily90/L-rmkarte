@@ -949,32 +949,51 @@ document.getElementById('showCoordinates').addEventListener('click', () => {
 });
 ///////////////////////button Lärmquelle////////////////////
 
+let pinModeEnabled = false; // Pin-Modus-Status
 
+let currentMarker = null; // Marker-Instanz für die Stecknadel
 
-// Eventlistener für den Button zum Öffnen des Modals oder zur Aktivierung des Kartenclicks
+// Eventlistener für den Button "Lärmquelle hinzufügen"
 document.getElementById('openModalButton').addEventListener('click', () => {
-    if (!selectedCoordinates) {
+    if (!pinModeEnabled) {
         alert('Bitte klicken Sie auf die Karte, um eine Position auszuwählen.');
-        enableMapClickForModal(); // Aktiviert das Kartenklicken, falls noch keine Koordinaten ausgewählt wurden
+        enableMapClickForModal(); // Aktiviert den Kartenklick und den Pin-Cursor
     } else {
-        openCategoryModal(selectedCoordinates); // Öffnet das Modal, wenn Koordinaten bereits vorhanden sind
+        alert('Der Pin-Modus ist bereits aktiv.');
     }
 });
 
-// Aktiviert das Klicken auf die Karte und öffnet direkt das Modal
+// Aktiviert den Pin-Cursor und das Klicken auf die Karte
 function enableMapClickForModal() {
-    // Entferne vorherige Listener, um Mehrfachbindungen zu vermeiden
+    const mapElement = document.getElementById('map'); // Karten-Element
+    pinModeEnabled = true; // Pin-Modus aktivieren
+    mapElement.classList.add('map-pin-cursor'); // Pin-Cursor aktivieren
+
+    // Entferne vorherige Klick-Listener
     map.off('click');
 
-    // Füge einen neuen Listener hinzu
+    // Listener für das Klicken auf die Karte hinzufügen
     map.on('click', function onMapClick(e) {
-        // Speichere die Koordinaten
-        selectedCoordinates = e.latlng;
+        // Speichere die Koordinaten des Klicks
+        const { lat, lng } = e.latlng;
+        selectedCoordinates = { lat, lng };
 
-        // Öffne das Modal mit den ausgewählten Koordinaten
+        // Entferne vorherigen Marker, falls vorhanden
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+
+        // Füge einen Marker an den Klick-Position hinzu
+        currentMarker = L.marker([lat, lng]).addTo(map);
+
+        // Öffne das Modal mit den Koordinaten
         openCategoryModal(selectedCoordinates);
 
-        // Entferne den Eventlistener, wenn die Koordinaten ausgewählt wurden
+        // Pin-Cursor deaktivieren
+        mapElement.classList.remove('map-pin-cursor');
+        pinModeEnabled = false;
+
+        // Entferne den Eventlistener für die Karte
         map.off('click', onMapClick);
     });
 }
@@ -990,9 +1009,11 @@ function openCategoryModal(coordinates) {
     const categoryModal = new bootstrap.Modal(document.getElementById('categoryModal'));
     categoryModal.show();
 
-    // Füge Eventlistener hinzu, um `selectedCoordinates` zurückzusetzen, wenn das Modal geschlossen wird
+    // Füge einen Eventlistener hinzu, um `selectedCoordinates` zurückzusetzen, wenn das Modal geschlossen wird
     const modalElement = document.getElementById('categoryModal');
     modalElement.addEventListener('hidden.bs.modal', () => {
         selectedCoordinates = null; // Zurücksetzen der Koordinaten
     });
 }
+
+

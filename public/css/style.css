@@ -157,62 +157,55 @@
         margin: 5px 0; /* Abstand nach oben und unten */
     }
 }
-/************************************
- *  Anpassungen für kleinere Bildschirme 576px
- ************************************/
-@media (max-width: 576px) {
-    #offcanvasDarkNavbar {
-        width: 200px; /* Noch kleinere Breite auf sehr kleinen Geräten */
-    }
-}
+
 /************************************
  *  Kartenansicht-Auswahlleiste
  ************************************/
 /* Styling für das Dropdown der Kartenansicht */
-.map-view-selector {
-    display: inline-block;
-    margin-left: 10px; /* Abstand zum Filter-Dropdown */
-}
 
-.map-view-selector .btn {
-    background-color: transparent; /* Transparentes Design für das Icon */
-    border: none; /* Kein Rahmen für den Button */
-    padding: 0; /* Kein zusätzlicher Abstand */
-    cursor: pointer;
-}
+@media (max-width: 768px) {
+    /* Navbar flexibles Layout für kleinere Bildschirme */
+    .navbar {
+        flex-wrap: wrap; /* Elemente untereinander anordnen, wenn nötig */
+    }
+    #offcanvasDarkNavbar {
+        width: 250px; /* Kleinere Breite auf Tablets oder kleineren Bildschirmen */
+    }
+    /* Suchformular Anpassung */
+    #searchForm {
+        flex-direction: column; /* Elemente untereinander anordnen */
+        align-items: stretch; /* Über die gesamte Breite strecken */
+        width: 100%; /* Volle Breite nutzen */
+        max-width: 100%; /* Maximalbreite auf 100% begrenzen */
+    }
 
-.map-view-selector .dropdown-menu {
-    min-width: 150px; /* Breite des Dropdowns */
-    text-align: left;
-}
+    /* Eingabefeld auf volle Breite setzen */
+    #addressInput {
+        width: 100%; /* Volle Breite für das Eingabefeld */
+        max-width: 100%; /* Maximale Breite auf 100% begrenzen */
+    }
 
-.map-view-selector .dropdown-item {
-    padding: 8px 16px;
-    cursor: pointer;
-}
+    /* Standort-Button zentrieren und Breite anpassen */
+    #locationButton {
+        width: 100%; /* Button über gesamte Breite */
+        margin: 10px 0; /* Abstand nach oben und unten */
+    }
 
-.map-view-selector .dropdown-item:hover {
-    background-color: #f0f0f0; /* Hintergrundfarbe bei Hover */
-}
+    /* Suchbutton auch auf volle Breite setzen */
+    .btn-success {
+        width: 100%; /* Suchbutton auf volle Breite */
+        margin-bottom: 10px; /* Abstand nach unten */
+    }
 
-.map-view-selector .dropdown-item.active {
-    background-color: #007bff; /* Farbe für aktive Auswahl */
-    color: white;
-}
-#mapViewDropdown img {
-    filter: brightness(0) invert(1); /* Verändert Schwarz in Weiß */
-}
+    .map-view-selector {
+        flex-direction: column; /* Buttons untereinander anzeigen */
+        align-items: stretch; /* Volle Breite nutzen */
+    }
 
-/* Blaues Highlight nur für die ausgewählte (aktive) Ansicht */
-.dropdown-item.active {
-    background-color: #007bff; /* Blau */
-    color: white;
-}
-
-/* Hover-Farbe für nicht ausgewählte Optionen */
-.dropdown-item:hover {
-    background-color: #f0f0f0;
-    color: black;
+    .map-view-btn {
+        width: 100%; /* Buttons über die gesamte Breite */
+        margin: 5px 0; /* Abstand nach oben und unten */
+    }
 }
 
 
@@ -413,3 +406,8 @@ input:checked + .slider:before {
     background-color: #f0f0f0;
 }
 
+/***********stecknadel********/
+.map-pin-cursor {
+    cursor: url('/images/pin-icon.png') 1 1, auto !important; /* Hotspot bei (5,5) für kleinere Größe */
+    
+}

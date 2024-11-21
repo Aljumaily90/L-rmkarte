@@ -70,20 +70,23 @@
                     <!-- Suchbutton -->
                     <button id="submit" class="btn btn-success ms-2" type="submit">Suche</button>
                 </form>
-                <button id="openModalButton" class="btn btn-primary">Lärmquelle hinzufügen</button>
+                
 
 
                 <!-- Dropdown für Kartenansicht mit einem Icon als Trigger -->
                 <div class="dropdown map-view-selector">
                     <button class="btn dropdown-toggle" type="button" id="mapViewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/images/ebenen-icon.png" alt="Kartenansicht" style="width: 30px; height: 30px;">
+                        <img src="/images/ebenen-icon.png" alt="Kartenansicht" style="width: 30px; height: 30px; filter: brightness(0) invert(1);">
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="mapViewDropdown">
                         <li><a class="dropdown-item" href="#" id="standardView">Standardansicht</a></li>
                         <li><a class="dropdown-item" href="#" id="satelliteView">Satellitenansicht</a></li>
                         <li><a class="dropdown-item" href="#" id="grayscaleView">Schwarz/Weiß-Karte</a></li>
+                        
                     </ul>
                 </div>
+                <button id="openModalButton" class="btn btn-primary" title="Klicken Sie hier, um eine Lärmquelle auszuwählen.">Lärmquelle hinzufügen</button>
+
 
                 <!-- Button zur Öffnung des Offcanvas-Menüs -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
